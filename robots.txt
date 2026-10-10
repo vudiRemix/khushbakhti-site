@@ -1,0 +1,6 @@
+User-Agent: *
+Allow: /
+Disallow: /admin
+Disallow: /t/
+
+Sitemap: https://vudiremix.github.io/khushbakhti-site/sitemap.xml
