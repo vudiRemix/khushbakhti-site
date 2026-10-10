@@ -1,0 +1,103 @@
+@import "tailwindcss";
+
+/* Brand tokens — see docs/DESIGN.md */
+@theme {
+  --color-burgundy: #84241e;
+  --color-gold: #e3b03c;
+  --color-cream: #f3e3c3;
+  --color-turq: #0b7a75;
+  --color-pakhta: #1d3a8f;
+  --color-stamp: #c2261b;
+  --color-board: #1f2b27;
+  --color-chalk: #f4f1e8;
+  --color-wood: #7a4e26;
+  --color-wash: #e3f0ee;
+  --color-ink: #141414;
+  --color-muted: #4a4f4d;
+  --color-line: #cfd8d6;
+}
+
+@theme inline {
+  --font-sign: var(--font-khushbakhti), var(--font-zcool), var(--font-notosc), sans-serif;
+  --font-text: var(--font-ptsans), var(--font-notosc), system-ui, sans-serif;
+  --font-chalk: var(--font-caveat), var(--font-zcool), cursive;
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    background: #fff;
+    color: var(--color-ink);
+    font-family: var(--font-text);
+    font-size: 17px;
+    line-height: 1.5;
+  }
+  /* Chinese pages: use the rounded ZCOOL KuaiLe for headings and Noto Sans SC for text. */
+  :lang(zh) body {
+    font-family: var(--font-notosc), var(--font-ptsans), sans-serif;
+  }
+  :focus-visible {
+    outline: 3px solid var(--color-gold);
+    outline-offset: 2px;
+  }
+  button,
+  [role="button"] {
+    cursor: pointer;
+  }
+  button:disabled {
+    cursor: not-allowed;
+  }
+}
+
+@layer components {
+  .sign-text {
+    font-family: var(--font-sign);
+    text-transform: uppercase;
+    font-weight: 400;
+  }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    min-height: 48px;
+    padding: 0 1.25rem;
+    font-weight: 700;
+    text-decoration: none;
+    border: 3px solid transparent;
+    transition: background-color 0.15s ease, color 0.15s ease;
+  }
+  .btn-ink { background: var(--color-ink); color: #fff; }
+  .btn-ink:hover { background: #2b2b2b; }
+  .btn-burgundy { background: var(--color-burgundy); color: #fff; }
+  .btn-burgundy:hover { background: #6d1d18; }
+  .btn-turq { background: var(--color-turq); color: #fff; }
+  .btn-turq:hover { background: #096762; }
+  .btn-outline { border-color: var(--color-ink); background: #fff; color: var(--color-ink); }
+  .btn-outline:hover { background: var(--color-wash); }
+  .stamp-new {
+    display: inline-block;
+    flex: none;
+    background: var(--color-stamp);
+    color: #fff;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 1px 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    transform: rotate(-3deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+
+@media print {
+  .no-print { display: none !important; }
+}
