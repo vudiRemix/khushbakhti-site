@@ -62,7 +62,7 @@ describe("admin password rules", () => {
     vi.stubEnv("ADMIN_PASSWORD", "");
     expect(adminPassword()).toBe("khushbakhti");
     vi.stubEnv("NEXT_PUBLIC_SUPABASE_URL", "https://x.supabase.co");
-    vi.stubEnv("SUPABASE_SERVICE_ROLE_KEY", "secret");
+    vi.stubEnv("SUPABASE_SECRET_KEY", "sb_secret_test");
     expect(adminPassword()).toBeNull();
   });
 });

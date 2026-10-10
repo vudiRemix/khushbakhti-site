@@ -16,6 +16,8 @@ export interface ClientDish {
   available: boolean;
   photo: string | null;
   name: string;
+  /** Unreviewed machine translation: shown with a * and a "-x-mtfrom-ru" lang tag. */
+  machine: boolean;
   nameRu: string;
   nameTg: string;
 }
@@ -35,9 +37,13 @@ interface Props {
   whatsapp: string;
   telegram: string;
   fee: number;
+  /** lang tag for machine-translated names, e.g. "en-x-mtfrom-ru". */
+  machineLang: string;
 }
 
-const PICKS_KEY = "kb_picks_v1";
+const PICKS_KEY = "kb_picks_v2";
+/** A selection older than this is from an earlier visit and starts empty. */
+const PICKS_TTL_MS = 12 * 60 * 60 * 1000;
 const ADDR_KEY = "kb_addr_v1";
 const TABLE_KEY = "kb_table_v1";
 
@@ -55,6 +61,20 @@ function readTable(): string | undefined {
   }
 }
 
+function readPicks(): Record<string, number> {
+  const saved = readJson<{ at?: number; picks?: Record<string, number> }>(PICKS_KEY, {});
+  return saved.at && Date.now() - saved.at < PICKS_TTL_MS && saved.picks ? saved.picks : {};
+}
+
+async function copyText(text: string): Promise<boolean> {
+  try {
+    await navigator.clipboard.writeText(text);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 function readJson<T>(key: string, fallback: T): T {
   try {
     const v = window.localStorage.getItem(key);
@@ -64,7 +84,7 @@ function readJson<T>(key: string, fallback: T): T {
   }
 }
 
-export function MenuClient({ locale, t, dishes, categories, phone, whatsapp, telegram, fee }: Props) {
+export function MenuClient({ locale, t, dishes, categories, phone, whatsapp, telegram, fee, machineLang }: Props) {
   const [cat, setCat] = useState("all");
   const [q, setQ] = useState("");
   const [picks, setPicks] = useState<Record<string, number>>({});
@@ -73,17 +93,18 @@ export function MenuClient({ locale, t, dishes, categories, phone, whatsapp, tel
   const [waiter, setWaiter] = useState(false);
   const [loaded, setLoaded] = useState(false);
   const [table, setTable] = useState<string>();
+  const [copied, setCopied] = useState(false);
 
   useEffect(() => {
     setTable(readTable());
-    setPicks(readJson(PICKS_KEY, {}));
+    setPicks(readPicks());
     setAddr(readJson(ADDR_KEY, ""));
     setLoaded(true);
   }, []);
   useEffect(() => {
     if (!loaded) return;
     try {
-      window.localStorage.setItem(PICKS_KEY, JSON.stringify(picks));
+      window.localStorage.setItem(PICKS_KEY, JSON.stringify({ at: Date.now(), picks }));
       window.localStorage.setItem(ADDR_KEY, JSON.stringify(addr));
     } catch {
       /* private mode: keep state in memory only */
@@ -100,13 +121,14 @@ export function MenuClient({ locale, t, dishes, categories, phone, whatsapp, tel
       (!query || `${d.name} ${d.nameRu} ${d.nameTg}`.toLowerCase().includes(query)),
   );
 
-  // Drop picks for dishes that disappeared from the menu.
+  // Picks of dishes that left the menu are dropped; sold-out ones stay visible but are not ordered.
   const picked = Object.entries(picks)
     .map(([id, qty]) => ({ dish: byId.get(id), qty }))
     .filter((p): p is { dish: ClientDish; qty: number } => !!p.dish && p.qty > 0);
-  const lines = picked.map((p) => ({ nameRu: p.dish.nameRu, qty: p.qty, priceTjs: p.dish.price }));
+  const ordered = picked.filter((p) => p.dish.available);
+  const lines = ordered.map((p) => ({ nameRu: p.dish.nameRu, qty: p.qty, priceTjs: p.dish.price }));
   const total = orderTotal(lines);
-  const count = picked.reduce((n, p) => n + p.qty, 0);
+  const count = ordered.reduce((n, p) => n + p.qty, 0);
   const message = buildDeliveryMessage({
     lines,
     deliveryFeeTjs: fee,
@@ -121,6 +143,13 @@ export function MenuClient({ locale, t, dishes, categories, phone, whatsapp, tel
       else next[id] = qty;
       return next;
     });
+
+  const copyMessage = async () => {
+    if (await copyText(message)) {
+      setCopied(true);
+      window.setTimeout(() => setCopied(false), 4000);
+    }
+  };
 
   const openWaiter = () => {
     setWaiter(true);
@@ -141,7 +170,7 @@ export function MenuClient({ locale, t, dishes, categories, phone, whatsapp, tel
             </span>
           </div>
           <ul className="m-0 list-none border-t-[3px] border-ink p-0">
-            {picked.map(({ dish, qty }) => (
+            {ordered.map(({ dish, qty }) => (
               <li key={dish.id} className="flex items-baseline justify-between gap-4 border-b border-line py-3.5">
                 <div className="flex min-w-0 flex-col">
                   <span className="text-[24px] font-bold leading-tight sm:text-[30px]">
@@ -232,7 +261,7 @@ export function MenuClient({ locale, t, dishes, categories, phone, whatsapp, tel
                   )}
                   <div className="flex min-w-0 flex-1 flex-col gap-1.5">
                     <div className="flex flex-wrap items-center gap-2">
-                      <h2 className={`sign-text m-0 text-[22px] leading-[1.05] sm:text-[26px] ${d.available ? "" : "text-muted line-through"}`}>{d.name}</h2>
+                      <h2 lang={d.machine ? machineLang : undefined} className={`sign-text m-0 text-[22px] leading-[1.05] sm:text-[26px] ${d.available ? "" : "text-muted line-through"}`}>{d.name}{d.machine ? "*" : ""}</h2>
                       {d.isNew ? <span className="stamp-new">{t.new}</span> : null}
                       {!d.available ? <span className="-rotate-3 border-2 border-ink px-1.5 text-[13px] font-bold uppercase">{t.soldOut}</span> : null}
                     </div>
@@ -284,17 +313,22 @@ export function MenuClient({ locale, t, dishes, categories, phone, whatsapp, tel
               {picked.map(({ dish, qty }) => (
                 <li key={dish.id} className="flex items-center gap-2.5 border-b border-line py-2.5">
                   <div className="flex min-w-0 flex-1 flex-col leading-tight">
-                    <span className="font-bold">{dish.name}</span>
-                    <span className="text-[15px] text-muted">{qty} × {money(locale, dish.price)}</span>
+                    <span className={`font-bold ${dish.available ? "" : "text-muted line-through"}`}>{dish.name}</span>
+                    <span className="text-[15px] text-muted">{dish.available ? `${qty} × ${money(locale, dish.price)}` : t.soldOut}</span>
                   </div>
                   <div className="flex items-center border-2 border-ink">
-                    <button type="button" onClick={() => setQty(dish.id, qty - 1)} aria-label={`${t.remove}: ${dish.name}`} className="size-10 bg-white text-[20px] font-bold">−</button>
+                    <button type="button" onClick={() => setQty(dish.id, dish.available ? qty - 1 : 0)} aria-label={`${t.remove}: ${dish.name}`} className="size-10 bg-white text-[20px] font-bold">−</button>
                     <span className="min-w-7 text-center font-bold">{qty}</span>
-                    <button type="button" onClick={() => setQty(dish.id, qty + 1)} aria-label={`${t.addOne}: ${dish.name}`} className="size-10 bg-ink text-[20px] font-bold text-white">+</button>
+                    <button type="button" disabled={!dish.available} onClick={() => setQty(dish.id, qty + 1)} aria-label={`${t.addOne}: ${dish.name}`} className="size-10 bg-ink text-[20px] font-bold text-white disabled:bg-line disabled:text-muted">+</button>
                   </div>
                 </li>
               ))}
             </ul>
+            {picked.length ? (
+              <button type="button" onClick={() => setPicks({})} className="self-end text-[15px] font-bold text-burgundy underline">
+                {t.clear}
+              </button>
+            ) : null}
 
             {mode === "hall" ? (
               <div className="flex flex-col gap-3">
@@ -302,7 +336,7 @@ export function MenuClient({ locale, t, dishes, categories, phone, whatsapp, tel
                   <span className="font-bold">{t.total}</span>
                   <span className="sign-text text-[40px] leading-none">{money(locale, total)}</span>
                 </div>
-                <button type="button" onClick={openWaiter} disabled={!picked.length} className="btn btn-turq min-h-14 text-[18px] disabled:opacity-50">
+                <button type="button" onClick={openWaiter} disabled={!ordered.length} className="btn btn-turq min-h-14 text-[18px] disabled:opacity-50">
                   {t.show}
                 </button>
                 <p className="m-0 text-[15px] text-muted">{t.hint}</p>
@@ -333,10 +367,16 @@ export function MenuClient({ locale, t, dishes, categories, phone, whatsapp, tel
                   <span className="mb-1 block text-[15px] font-bold">{t.messageLabel}</span>
                   <p lang="ru" className="m-0 whitespace-pre-line border-2 border-ink bg-wash p-3 text-[14px]">{message}</p>
                 </div>
-                {picked.length ? (
+                {ordered.length ? (
                   <>
                     <a href={whatsappLink(whatsapp, message)} target="_blank" rel="noopener" className="btn btn-turq min-h-[52px]">{t.sendWa}</a>
-                    <a href={telegramLink(telegram, message)} target="_blank" rel="noopener" className="btn btn-outline min-h-[52px]">{t.sendTg}</a>
+                    {/* Some Telegram clients open the chat without the text, so it is also copied for pasting. */}
+                    <a href={telegramLink(telegram, message)} onClick={copyMessage} target="_blank" rel="noopener" className="btn btn-outline min-h-[52px]">{t.sendTg}</a>
+                    <span className="-mt-1 text-[13px] text-muted">{t.tgHint}</span>
+                    <button type="button" onClick={copyMessage} className="self-start text-[15px] font-bold text-ink underline">
+                      {t.copyMessage}
+                    </button>
+                    <span role="status" className="min-h-5 text-[14px] font-bold text-turq">{copied ? t.copied : ""}</span>
                   </>
                 ) : null}
                 <a href={telHref(phone)} className="btn btn-burgundy min-h-[52px]">{t.callOrder}</a>

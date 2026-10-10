@@ -7,7 +7,8 @@ import { SubmitButton } from "@/components/admin/SubmitButton";
 import { requireAdmin } from "@/lib/auth";
 import { getMenu } from "@/lib/store";
 import { TARGET_LOCALES, type Dish, type TargetLocale, type TrStatus } from "@/lib/types";
-import { deleteDish, markChecked, retranslate, saveDish } from "../../actions";
+import { adminErrorText } from "@/lib/admin-errors";
+import { deleteDish, saveDish } from "../../actions";
 
 export const dynamic = "force-dynamic";
 
@@ -17,6 +18,7 @@ const STATUS: Record<TrStatus, { text: string; cls: string }> = {
   auto: { text: "Автоперевод · нужна проверка", cls: "bg-gold text-ink" },
   manual: { text: "Исправлено вручную", cls: "bg-pakhta text-white" },
   missing: { text: "Нет перевода", cls: "bg-stamp text-white" },
+  stale: { text: "Русский текст изменён · проверьте перевод", cls: "bg-stamp text-white" },
 };
 
 const field = "min-h-12 w-full border-[3px] border-ink bg-white px-3";
@@ -30,7 +32,8 @@ export default async function DishEditor({
 }) {
   await requireAdmin();
   const { id } = await params;
-  const { saved, error } = await searchParams;
+  const { saved, error: errorCode } = await searchParams;
+  const error = adminErrorText(errorCode);
   const { categories, dishes } = await getMenu();
   const isNew = id === "new";
   const dish: Dish | undefined = isNew ? undefined : dishes.find((d) => d.id === id);
@@ -43,7 +46,9 @@ export default async function DishEditor({
       {saved ? <p role="status" className="mb-3 border-2 border-turq bg-white p-3 font-bold">Сохранено. Сайт обновится в течение минуты.</p> : null}
       {error ? <p role="alert" className="mb-3 border-2 border-stamp bg-white p-3 font-bold text-stamp">{error}</p> : null}
 
-      <form action={saveDish} className="grid gap-5 lg:grid-cols-[1fr_1fr]">
+      <form action={saveDish} className="relative grid gap-5 lg:grid-cols-[1fr_1fr]">
+        {/* Pressing Enter in a field submits the form's first button: make it «Сохранить», not a translation button. */}
+        <button type="submit" name="intent" value="save" tabIndex={-1} aria-hidden="true" className="sr-only">Сохранить</button>
         <input type="hidden" name="id" value={dish?.id ?? ""} />
 
         <fieldset className="m-0 flex flex-col gap-4 border-[3px] border-ink bg-white p-4">
@@ -106,10 +111,13 @@ export default async function DishEditor({
         <fieldset className="m-0 flex flex-col gap-4 border-[3px] border-ink bg-white p-4">
           <legend className="px-1 font-bold">Переводы</legend>
           <p className="m-0 text-[14px] text-muted">
-            При сохранении, если русский текст изменился, переводы обновятся автоматически. Исправленные вручную не перезаписываются.
+            При сохранении, если русский текст изменился, переводы обновятся автоматически (если подключён переводчик). Исправленные вручную не перезаписываются. Пока перевода нет, гости видят название по-русски; непроверенный автоперевод отмечен на сайте звёздочкой.
           </p>
           {TARGET_LOCALES.map((lang) => {
-            const status = dish ? STATUS[dish.trStatus[lang]] : STATUS.missing;
+            const status = !dish
+              ? STATUS.missing
+              : // "missing" with old text left: the translator failed after the Russian text changed.
+                STATUS[dish.trStatus[lang] === "missing" && dish.name[lang] ? "stale" : dish.trStatus[lang]];
             return (
               <div key={lang} id={`tr-${lang}`} className="flex scroll-mt-4 flex-col gap-2 border-2 border-ink p-3">
                 <div className="flex flex-wrap items-center justify-between gap-2">
@@ -122,12 +130,12 @@ export default async function DishEditor({
                 <textarea id={`desc_${lang}`} name={`desc_${lang}`} rows={2} defaultValue={dish?.description[lang]} lang={lang === "zh" ? "zh-Hans" : lang} className={`${field} py-2`} placeholder="Описание" />
                 {dish ? (
                   <div className="flex flex-wrap gap-2">
-                    {dish.trStatus[lang] !== "checked" ? (
-                      <button type="submit" formAction={markChecked} name="lang" value={lang} className="btn btn-outline min-h-10 border-turq px-3 text-[14px] text-turq">
+                    {dish.trStatus[lang] !== "checked" && dish.name[lang] ? (
+                      <button type="submit" name="intent" value={`check:${lang}`} className="btn btn-outline min-h-10 border-turq px-3 text-[14px] text-turq">
                         Отметить «проверено»
                       </button>
                     ) : null}
-                    <button type="submit" formAction={retranslate} name="lang" value={lang} className="btn btn-outline min-h-10 px-3 text-[14px]">
+                    <button type="submit" name="intent" value={`retranslate:${lang}`} className="btn btn-outline min-h-10 px-3 text-[14px]">
                       Перевести заново
                     </button>
                   </div>

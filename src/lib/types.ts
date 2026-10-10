@@ -11,9 +11,10 @@ export type L10n = Record<Locale, string>;
  * auto    — machine translation, waiting for review
  * checked — reviewed by a person
  * manual  — typed by a person; never overwritten by auto-translation
- * missing — no translation yet (e.g. translator not configured)
+ * stale   — typed by a person, but the Russian text changed since; kept until reviewed
+ * missing — no up-to-date translation (translator not configured or failed); retried on the next save
  */
-export type TrStatus = "auto" | "checked" | "manual" | "missing";
+export type TrStatus = "auto" | "checked" | "manual" | "stale" | "missing";
 
 export interface Category {
   id: string;

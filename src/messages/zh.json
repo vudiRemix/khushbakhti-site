@@ -10,7 +10,7 @@
     "navVisit": "地址",
     "call": "致电",
     "language": "网站语言",
-    "autoNote": "自动翻译",
+    "autoNote": "* 机器翻译，可能不准确",
     "photoNote": "菜品图片为临时图片",
     "credits": "图片作者",
     "skip": "跳到正文"
@@ -67,6 +67,10 @@
     "sendTg": "通过 Telegram 发送",
     "callOrder": "电话订餐",
     "noMinimum": "无起送金额。",
+    "clear": "清空",
+    "copyMessage": "复制文字",
+    "copied": "已复制",
+    "tgHint": "如果聊天窗口是空的，请粘贴已复制的文字",
     "remove": "删除",
     "addOne": "再加一份",
     "guestLanguage": "китайский (中文)"

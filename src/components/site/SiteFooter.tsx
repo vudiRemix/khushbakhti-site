@@ -10,7 +10,6 @@ export function SiteFooter({ locale, t, city }: { locale: Locale; t: Dictionary[
       <div className="bg-burgundy px-4 py-6 text-cream sm:px-6">
         <div className="mx-auto flex max-w-[1280px] flex-wrap items-center justify-between gap-x-6 gap-y-2 text-[15px]">
           <span className="sign-text text-[26px] text-gold">Хушбахтӣ</span>
-          {t.autoNote ? <span>{t.autoNote}</span> : null}
           <span>
             © {new Date().getFullYear()} · {city} · {t.photoNote} ·{" "}
             <Link href={`/${locale}/credits`} className="text-cream underline">

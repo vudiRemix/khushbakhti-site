@@ -6,6 +6,7 @@ import { checkPassword, endSession, requireAdmin, startSession } from "@/lib/aut
 import { processDishPhoto } from "@/lib/images";
 import { getStore } from "@/lib/store";
 import { refreshTranslations, translateTexts } from "@/lib/translate";
+import type { AdminError } from "@/lib/admin-errors";
 import { TARGET_LOCALES, type Dish, type Settings, type TargetLocale } from "@/lib/types";
 
 const str = (fd: FormData, key: string) => String(fd.get(key) ?? "").trim();
@@ -74,25 +75,34 @@ function newDishId(nameRu: string, taken: Set<string>): string {
   return id;
 }
 
-function fail(id: string, message: string): never {
-  redirect(`/admin/dishes/${id || "new"}?error=${encodeURIComponent(message)}`);
+function fail(id: string, code: AdminError, hash = ""): never {
+  redirect(`/admin/dishes/${id || "new"}?error=${code}${hash}`);
 }
 
+/**
+ * Saves the dish form. The per-language buttons («Отметить „проверено“», «Перевести заново») submit the same
+ * form with intent=check:<lang> / retranslate:<lang>, so nothing typed is lost; Enter always means «Сохранить».
+ * A failed photo or translator still saves everything else and explains what went wrong.
+ */
 export async function saveDish(formData: FormData) {
   await requireAdmin();
   const store = getStore();
   const menu = await store.getMenu();
   const id = str(formData, "id");
   const existing = id ? menu.dishes.find((d) => d.id === id) : undefined;
-  if (id && !existing) fail("", "Блюдо не найдено");
+  if (id && !existing) fail("", "notfound");
 
   const nameRu = str(formData, "name_ru");
   const descRu = str(formData, "desc_ru");
-  const price = Number(str(formData, "price"));
+  const price = Number(str(formData, "price").replace(/\s|смн|сом\.?/gi, "").replace(",", "."));
   const category = str(formData, "category");
-  if (!nameRu) fail(id, "Введите название на русском");
-  if (!Number.isInteger(price) || price < 0 || price > 100000) fail(id, "Цена — целое число сомони");
-  if (!menu.categories.some((c) => c.id === category)) fail(id, "Выберите категорию");
+  if (!nameRu) fail(id, "name");
+  if (!Number.isInteger(price) || price < 0 || price > 100000) fail(id, "price");
+  if (!menu.categories.some((c) => c.id === category)) fail(id, "category");
+
+  const [intent, intentLang] = str(formData, "intent").split(":");
+  const lang = TARGET_LOCALES.find((l) => l === intentLang);
+  const anchor = lang ? `#tr-${lang}` : "";
 
   const now = new Date().toISOString();
   let dish: Dish = existing
@@ -123,18 +133,34 @@ export async function saveDish(formData: FormData) {
   dish.description.ru = descRu;
 
   // A translation the admin edited by hand becomes "manual" and is never overwritten automatically.
-  for (const lang of TARGET_LOCALES) {
-    const n = str(formData, `name_${lang}`);
-    const d = str(formData, `desc_${lang}`);
-    if (formData.has(`name_${lang}`) && (n !== dish.name[lang] || d !== dish.description[lang])) {
-      dish.name[lang] = n;
-      dish.description[lang] = d;
-      dish.trStatus[lang] = n ? "manual" : "missing";
+  const editedNow = new Set<TargetLocale>();
+  for (const l of TARGET_LOCALES) {
+    const n = str(formData, `name_${l}`);
+    const d = str(formData, `desc_${l}`);
+    if (formData.has(`name_${l}`) && (n !== dish.name[l] || d !== dish.description[l])) {
+      dish.name[l] = n;
+      dish.description[l] = d;
+      dish.trStatus[l] = n ? "manual" : "missing";
+      editedNow.add(l);
     }
   }
 
-  dish = await refreshTranslations(dish);
+  dish = await refreshTranslations(dish, { editedNow });
 
+  let translatorFailed = false;
+  if (intent === "check" && lang && dish.name[lang]) dish.trStatus[lang] = "checked";
+  if (intent === "retranslate" && lang) {
+    const result = await translateTexts([dish.name.ru, dish.description.ru], lang);
+    if (result) {
+      dish.name[lang] = result[0];
+      dish.description[lang] = result[1];
+      dish.trStatus[lang] = "auto";
+    } else {
+      translatorFailed = true;
+    }
+  }
+
+  let photoFailed = false;
   const photo = formData.get("photo");
   if (formData.get("remove_photo") === "on") {
     dish.photo = null;
@@ -144,14 +170,22 @@ export async function saveDish(formData: FormData) {
       dish.photo = await store.uploadPhoto(dish.id, await processDishPhoto(photo));
       dish.photoCredit = null;
     } catch (e) {
-      fail(dish.id, `Фото не загрузилось: ${(e as Error).message}`);
+      console.error("Photo upload failed", e);
+      photoFailed = true;
     }
   }
 
   dish.updatedAt = now;
-  await store.saveDish(dish);
+  try {
+    await store.saveDish(dish);
+  } catch (e) {
+    console.error("Saving the dish failed", e);
+    fail(existing ? dish.id : "", "save");
+  }
   refreshSite();
-  redirect(`/admin/dishes/${dish.id}?saved=1`);
+  if (photoFailed) fail(dish.id, "photo");
+  if (translatorFailed) fail(dish.id, "translator", anchor);
+  redirect(`/admin/dishes/${dish.id}?saved=1${anchor}`);
 }
 
 export async function deleteDish(formData: FormData) {
@@ -161,54 +195,53 @@ export async function deleteDish(formData: FormData) {
   redirect("/admin?deleted=1");
 }
 
-export async function markChecked(formData: FormData) {
-  await requireAdmin();
-  const store = getStore();
-  const lang = str(formData, "lang") as TargetLocale;
-  const dish = (await store.getMenu()).dishes.find((d) => d.id === str(formData, "id"));
-  if (!dish || !TARGET_LOCALES.includes(lang)) return;
-  await store.saveDish({ ...dish, trStatus: { ...dish.trStatus, [lang]: "checked" } });
-  refreshSite();
-  redirect(`/admin/dishes/${dish.id}#tr-${lang}`);
-}
-
-export async function retranslate(formData: FormData) {
-  await requireAdmin();
-  const store = getStore();
-  const lang = str(formData, "lang") as TargetLocale;
-  const dish = (await store.getMenu()).dishes.find((d) => d.id === str(formData, "id"));
-  if (!dish || !TARGET_LOCALES.includes(lang)) return;
-  const result = await translateTexts([dish.name.ru, dish.description.ru], lang);
-  if (!result) fail(dish.id, "Переводчик не настроен (GOOGLE_TRANSLATE_API_KEY) или недоступен");
-  await store.saveDish({
-    ...dish,
-    name: { ...dish.name, [lang]: result[0] },
-    description: { ...dish.description, [lang]: result[1] },
-    trStatus: { ...dish.trStatus, [lang]: "auto" },
-  });
-  refreshSite();
-  redirect(`/admin/dishes/${dish.id}#tr-${lang}`);
-}
-
 // ---------- settings ----------
+
+/** "+992 92 991 00 09", "929910009" or "992929910009" → "992929910009"; null if it is not a Tajik number. */
+function tjDigits(v: string): string | null {
+  const d = v.replace(/\D/g, "");
+  const full = d.length === 9 ? `992${d}` : d;
+  return /^992\d{9}$/.test(full) ? full : null;
+}
+
+/** A pasted profile link or "@name" → "name"; null if what is left is not a valid username. */
+function username(v: string): string | null {
+  const name = v
+    .replace(/^https?:\/\/(www\.)?(t\.me|telegram\.me|instagram\.com)\//i, "")
+    .replace(/^@/, "")
+    .replace(/[/?#].*$/, "");
+  return /^[A-Za-z0-9_.]{3,32}$/.test(name) ? name : null;
+}
+
+function coordinate(v: string, limit: number): number | null {
+  const n = Number(v.replace(",", "."));
+  return v && Number.isFinite(n) && Math.abs(n) <= limit && n !== 0 ? n : null;
+}
 
 export async function saveSettings(formData: FormData) {
   await requireAdmin();
   const store = getStore();
   const { settings } = await store.getMenu();
+  const bad = (code: AdminError): never => redirect(`/admin/settings?error=${code}`);
+  // Empty fields keep the current value; filled ones must be valid, so a typo never breaks a contact link.
+  const pick = <T,>(raw: string, parse: (v: string) => T | null, current: T, code: AdminError): T => {
+    if (!raw) return current;
+    const v = parse(raw);
+    return v === null ? bad(code) : v;
+  };
   const time = (v: string, fallback: string) => (/^\d{2}:\d{2}$/.test(v) ? v : fallback);
   const fee = Number(str(formData, "delivery_fee"));
-  const lat = Number(str(formData, "lat"));
-  const lon = Number(str(formData, "lon"));
+  const phoneRaw = str(formData, "phone");
   const next: Settings = {
     ...settings,
     plovToday: formData.get("plov_today") === "on",
     hoursOpen: time(str(formData, "hours_open"), settings.hoursOpen),
     hoursClose: time(str(formData, "hours_close"), settings.hoursClose),
-    phone: str(formData, "phone") || settings.phone,
-    whatsapp: str(formData, "whatsapp").replace(/\D/g, "") || settings.whatsapp,
-    telegram: str(formData, "telegram").replace(/^@/, "") || settings.telegram,
-    instagram: str(formData, "instagram").replace(/^@/, "") || settings.instagram,
+    // Shown as typed; a local 9-digit number gets the country code so the tel: link works.
+    phone: pick(phoneRaw, (v) => (!tjDigits(v) ? null : v.replace(/\D/g, "").length === 9 ? `+992 ${v}` : v), settings.phone, "phone"),
+    whatsapp: pick(str(formData, "whatsapp"), tjDigits, settings.whatsapp, "whatsapp"),
+    telegram: pick(str(formData, "telegram"), username, settings.telegram, "telegram"),
+    instagram: pick(str(formData, "instagram"), username, settings.instagram, "instagram"),
     deliveryFeeTjs: Number.isFinite(fee) && fee >= 0 ? Math.round(fee) : settings.deliveryFeeTjs,
     address: {
       ru: str(formData, "address_ru") || settings.address.ru,
@@ -216,11 +249,16 @@ export async function saveSettings(formData: FormData) {
       en: str(formData, "address_en") || settings.address.en,
       zh: str(formData, "address_zh") || settings.address.zh,
     },
-    lat: Number.isFinite(lat) && lat !== 0 ? lat : settings.lat,
-    lon: Number.isFinite(lon) && lon !== 0 ? lon : settings.lon,
-    googleMapsUrl: str(formData, "google_maps") || settings.googleMapsUrl,
+    lat: pick(str(formData, "lat"), (v) => coordinate(v, 90), settings.lat, "coords"),
+    lon: pick(str(formData, "lon"), (v) => coordinate(v, 180), settings.lon, "coords"),
+    googleMapsUrl: pick(str(formData, "google_maps"), (v) => (/^https:\/\/\S+$/.test(v) ? v : null), settings.googleMapsUrl, "maps"),
   };
-  await store.saveSettings(next);
+  try {
+    await store.saveSettings(next);
+  } catch (e) {
+    console.error("Saving settings failed", e);
+    bad("save");
+  }
   refreshSite();
   redirect("/admin/settings?saved=1");
 }

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { SiteHeader } from "@/components/site/SiteHeader";
+import { dishName } from "@/lib/dish-text";
 import { getDictionary } from "@/lib/i18n";
 import { CITY } from "@/lib/site";
 import { getMenu } from "@/lib/store";
@@ -30,7 +31,7 @@ export default async function CreditsPage({ params }: { params: Promise<{ locale
         <ul className="m-0 list-none p-0">
           {credited.map((d) => (
             <li key={d.id} className="border-b border-line py-3">
-              <span className="font-bold">{d.name[locale]}</span> — {d.photoCredit!.author},{" "}
+              <span className="font-bold">{dishName(d, locale)}</span> — {d.photoCredit!.author},{" "}
               {d.photoCredit!.licenseUrl ? <a href={d.photoCredit!.licenseUrl}>{d.photoCredit!.license}</a> : d.photoCredit!.license},{" "}
               <a href={d.photoCredit!.source}>{d.photoCredit!.source.replace(/^https:\/\//, "")}</a>
             </li>

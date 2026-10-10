@@ -4,7 +4,7 @@ import { AdminShell } from "@/components/admin/AdminShell";
 import { SubmitButton } from "@/components/admin/SubmitButton";
 import { requireAdmin } from "@/lib/auth";
 import { getMenu } from "@/lib/store";
-import { TARGET_LOCALES } from "@/lib/types";
+import { TARGET_LOCALES, type TrStatus } from "@/lib/types";
 import { togglePlov, toggleAvailable } from "./actions";
 
 export const dynamic = "force-dynamic";
@@ -13,7 +13,8 @@ export default async function AdminHome({ searchParams }: { searchParams: Promis
   await requireAdmin();
   const { deleted } = await searchParams;
   const { categories, dishes, settings } = await getMenu();
-  const review = dishes.filter((d) => TARGET_LOCALES.some((l) => d.trStatus[l] === "auto" || d.trStatus[l] === "missing"));
+  const needsReview = (s: TrStatus) => s === "auto" || s === "missing" || s === "stale";
+  const review = dishes.filter((d) => TARGET_LOCALES.some((l) => needsReview(d.trStatus[l])));
   const soldOut = dishes.filter((d) => !d.available).length;
 
   return (
@@ -54,7 +55,7 @@ export default async function AdminHome({ searchParams }: { searchParams: Promis
             <h2 className="sign-text m-0 mb-1 text-[22px] text-turq">{c.name.ru}</h2>
             <ul className="m-0 list-none border-2 border-ink bg-white p-0">
               {items.map((d) => {
-                const needsReview = TARGET_LOCALES.filter((l) => d.trStatus[l] === "auto" || d.trStatus[l] === "missing");
+                const toReview = TARGET_LOCALES.filter((l) => needsReview(d.trStatus[l]));
                 return (
                   <li key={d.id} className={`flex items-center gap-3 border-b border-line px-2.5 py-2 last:border-b-0 ${d.available ? "" : "opacity-60"}`}>
                     <Link href={`/admin/dishes/${d.id}`} className="flex min-w-0 flex-1 items-center gap-3 text-ink no-underline">
@@ -68,7 +69,7 @@ export default async function AdminHome({ searchParams }: { searchParams: Promis
                         <span className="text-[14px] text-muted">
                           {d.priceTjs} смн · {d.available ? "в наличии" : "закончилось"}
                           {d.isNew ? " · новинка" : ""}
-                          {needsReview.length ? ` · проверить: ${needsReview.map((l) => l.toUpperCase()).join(", ")}` : ""}
+                          {toReview.length ? ` · проверить: ${toReview.map((l) => l.toUpperCase()).join(", ")}` : ""}
                         </span>
                       </span>
                     </Link>

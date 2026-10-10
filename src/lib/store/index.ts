@@ -1,4 +1,5 @@
 import "server-only";
+import { supabaseEnv } from "../env";
 import { FileStore } from "./file";
 import { SupabaseStore } from "./supabase";
 import type { Store } from "./types";
@@ -8,9 +9,8 @@ let store: Store | undefined;
 /** Supabase when its env vars are set, otherwise the local JSON file. */
 export function getStore(): Store {
   if (!store) {
-    const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-    const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
-    store = url && key ? new SupabaseStore(url, key) : new FileStore();
+    const supabase = supabaseEnv();
+    store = supabase ? new SupabaseStore(supabase.url, supabase.key) : new FileStore();
   }
   return store;
 }

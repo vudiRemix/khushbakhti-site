@@ -2,6 +2,7 @@ import "server-only";
 import { createHash, createHmac, timingSafeEqual } from "node:crypto";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import { supabaseEnv } from "./env";
 
 const COOKIE = "kb_admin";
 const MAX_AGE_S = 60 * 60 * 24 * 30; // 30 days
@@ -18,8 +19,7 @@ export function passwordProblem(): "missing" | "short" | null {
 
 /** The fixed default only works on a developer's computer that is not connected to the real database. */
 function devPasswordAllowed(): boolean {
-  const realData = process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY;
-  return process.env.NODE_ENV !== "production" && !realData;
+  return process.env.NODE_ENV !== "production" && !supabaseEnv();
 }
 
 /** Admin password, or null when login is impossible (not set or too short). */
@@ -33,7 +33,7 @@ export function adminPassword(): string | null {
  * and is keyed by a server-only secret, so a copied cookie cannot be used to guess the password offline.
  */
 function secret(): string {
-  const key = process.env.SESSION_SECRET || process.env.SUPABASE_SERVICE_ROLE_KEY || "kb-session";
+  const key = process.env.SESSION_SECRET || supabaseEnv()?.key || "kb-session";
   return createHmac("sha256", key).update(`kb-session:${adminPassword() ?? ""}`).digest("hex");
 }
 

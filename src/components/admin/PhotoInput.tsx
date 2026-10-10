@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 
 const MAX_SIDE = 1600;
 const KEEP_BELOW_BYTES = 1.5 * 1024 * 1024;
+/** Hosts reject requests above ~4.5 MB; a file we could not shrink must stay below that. */
+const MAX_UNSHRUNK_BYTES = 4 * 1024 * 1024;
 
 const mb = (bytes: number) => `${(bytes / 1024 / 1024).toFixed(1).replace(".", ",")} МБ`;
 
@@ -47,6 +49,8 @@ export function PhotoInput({ label, className }: { label: React.ReactNode; class
     setPreview(null);
     if (!original) return;
     setBusy(true);
+    // Blocks «Сохранить» until the shrunk file is in place, so the original never gets sent by accident.
+    input.setCustomValidity("Подождите, фото готовится…");
     try {
       const small = await shrink(original);
       if (small) {
@@ -56,8 +60,13 @@ export function PhotoInput({ label, className }: { label: React.ReactNode; class
         setNote(`Фото уменьшено: ${mb(original.size)} → ${mb(small.size)}`);
       }
     } catch {
-      setNote(original.size > 4 * 1024 * 1024 ? `Фото ${mb(original.size)} — может не загрузиться. Лучше выбрать поменьше.` : null);
+      if (original.size > MAX_UNSHRUNK_BYTES) {
+        input.value = "";
+        setNote(`Это фото (${mb(original.size)}) не открывается в браузере и слишком большое для загрузки. Выберите другое фото или снимите заново.`);
+        return;
+      }
     } finally {
+      input.setCustomValidity("");
       setBusy(false);
     }
     const chosen = input.files?.[0];

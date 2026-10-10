@@ -1,17 +1,26 @@
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { MachineNote } from "@/components/site/MachineNote";
 import { Pakhta } from "@/components/site/Pakhta";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { SiteHeader } from "@/components/site/SiteHeader";
 import { fill, getDictionary } from "@/lib/i18n";
+import { dishName, isMachineTranslated, machineLang } from "@/lib/dish-text";
 import { money, telHref } from "@/lib/format";
 import { telegramLink, whatsappLink } from "@/lib/order";
 import { CITY, siteUrl } from "@/lib/site";
 import { getMenu } from "@/lib/store";
-import { isLocale } from "@/lib/types";
+import { translatorConfigured } from "@/lib/translate";
+import { isLocale, type Dish, type Locale } from "@/lib/types";
 
 export const revalidate = 300;
+
+/** Dish name; unreviewed machine translations get the lang tag Google asks for and a * mark. */
+function DishName({ d, locale }: { d: Dish; locale: Locale }) {
+  if (!isMachineTranslated(d, locale)) return <>{dishName(d, locale)}</>;
+  return <span lang={machineLang(locale)}>{dishName(d, locale)}*</span>;
+}
 
 export default async function HomePage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
@@ -26,6 +35,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
   const groups = categories
     .map((c) => ({ c, items: dishes.filter((d) => d.category === c.id) }))
     .filter((g) => g.items.length);
+  const anyMachine = dishes.some((d) => isMachineTranslated(d, locale));
 
   const board = [
     { name: t.home.plov, state: s.plovToday ? t.home.yes : t.home.no, on: s.plovToday },
@@ -112,9 +122,9 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
             <div className="grid grid-cols-2 gap-4 sm:gap-5 lg:grid-cols-4">
               {featured.map((d) => (
                 <Link key={d.id} href={`/${locale}/menu`} className="flex flex-col gap-2.5 text-ink no-underline">
-                  <Image src={d.photo!} alt={d.name[locale]} width={600} height={600} sizes="(max-width: 1024px) 50vw, 25vw" className="aspect-square w-full border-[3px] border-ink object-cover" />
+                  <Image src={d.photo!} alt={dishName(d, locale)} width={600} height={600} sizes="(max-width: 1024px) 50vw, 25vw" className="aspect-square w-full border-[3px] border-ink object-cover" />
                   <div className="flex flex-col gap-0.5 sm:flex-row sm:items-baseline sm:justify-between sm:gap-2.5">
-                    <span className="sign-text text-[17px] leading-tight [overflow-wrap:anywhere] sm:text-[22px]">{d.name[locale]}</span>
+                    <span className="sign-text text-[17px] leading-tight [overflow-wrap:anywhere] sm:text-[22px]"><DishName d={d} locale={locale} /></span>
                     <span className="sign-text whitespace-nowrap text-[22px] sm:text-[26px]">{money(locale, d.priceTjs)}</span>
                   </div>
                 </Link>
@@ -131,7 +141,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
                   {items.map((d) => (
                     <div key={d.id} className="flex items-baseline gap-2.5 py-2">
                       {d.isNew ? <span className="stamp-new">{t.menu.new}</span> : null}
-                      <span className={`text-[18px] font-bold leading-tight ${d.available ? "" : "text-muted line-through"}`}>{d.name[locale]}</span>
+                      <span className={`text-[18px] font-bold leading-tight ${d.available ? "" : "text-muted line-through"}`}><DishName d={d} locale={locale} /></span>
                       <span aria-hidden="true" className="min-w-6 flex-1 -translate-y-1.5 border-b-2 border-dotted border-ink" />
                       <span className="sign-text text-[26px] leading-none">{d.priceTjs}</span>
                     </div>
@@ -139,6 +149,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
                 </div>
               ))}
             </div>
+            {anyMachine ? <MachineNote note={t.common.autoNote} google={translatorConfigured()} /> : null}
           </div>
         </section>
 

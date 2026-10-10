@@ -88,31 +88,48 @@ describe("seed", () => {
 
 describe("translation helpers", () => {
   it("protects glossary terms with the target form", () => {
-    expect(protectTerms("Плов кенча", "en")).toBe('<span translate="no">Plov</span> <span translate="no">kencha</span>');
-    expect(protectTerms("Мясо «Кавурдок»", "tg")).toContain('<span translate="no">Қовурдоқ</span>');
+    const keep = (s: string) => `<span translate="no" class="notranslate">${s}</span>`;
+    expect(protectTerms("Плов кенча", "en")).toBe(`${keep("Plov")} ${keep("kencha")}`);
+    expect(protectTerms("Мясо «Кавурдок»", "tg")).toContain(keep("Қовурдоқ"));
     expect(protectTerms("Котлета & соус", "en")).toBe("Котлета &amp; соус");
+    expect(protectTerms("Порция плова с шурпой", "en")).toBe(`Порция ${keep("plov")} с ${keep("shurpa")}`);
+    expect(protectTerms("Табак", "en")).toBe("Табак");
+    expect(protectTerms("Пловец", "en")).toBe("Пловец");
   });
   it("unwraps spans and decodes entities", () => {
     expect(unprotect('<span translate="no">Kencha</span> plov &amp; tea &#39;x&#39;')).toBe("Kencha plov & tea 'x'");
+    expect(unprotect('<span class="notranslate" translate="no">Plov</span> &#x27;Samarkand&#x27;')).toBe("Plov 'Samarkand'");
   });
   it("re-translates changed dishes but keeps manual translations", async () => {
     const dish = { ...seedMenu().dishes[0] };
     dish.trStatus = { tg: "manual", en: "checked", zh: "checked" };
     dish.name = { ...dish.name, ru: "Новый суп" };
     const fake = async (texts: string[], lang: string) => texts.map((t) => (t ? `[${lang}] ${t}` : ""));
-    const next = await refreshTranslations(dish, fake);
+    const next = await refreshTranslations(dish, { translate: fake });
     expect(next.name.tg).toBe(dish.name.tg);
-    expect(next.trStatus.tg).toBe("manual");
+    expect(next.trStatus.tg).toBe("stale");
     for (const l of ["en", "zh"] as const) {
       expect(next.name[l]).toBe(`[${l}] Новый суп`);
       expect(next.trStatus[l]).toBe("auto");
     }
-    const again = await refreshTranslations(next, async () => { throw new Error("must not translate twice"); });
+    const again = await refreshTranslations(next, { translate: async () => { throw new Error("must not translate twice"); } });
     expect(again).toBe(next);
   });
-  it("marks translations missing when the translator is unavailable", async () => {
+  it("marks translations missing when the translator is unavailable and retries them on the next save", async () => {
     const dish = { ...seedMenu().dishes[1], name: { ...seedMenu().dishes[1].name, ru: "Другое имя" } };
-    const next = await refreshTranslations(dish, async () => null);
+    const next = await refreshTranslations(dish, { translate: async () => null });
     for (const l of TARGET_LOCALES) expect(next.trStatus[l]).toBe("missing");
+    expect(next.name.en).toBe(dish.name.en);
+    const retried = await refreshTranslations(next, { translate: async (t, l) => t.map((x) => (x ? `[${l}] ${x}` : "")) });
+    for (const l of TARGET_LOCALES) expect(retried.trStatus[l]).toBe("auto");
+    expect(retried.name.en).toBe("[en] Другое имя");
+  });
+  it("keeps a translation typed in the same save as a Russian change", async () => {
+    const dish = { ...seedMenu().dishes[2] };
+    dish.name = { ...dish.name, ru: "Новое имя", en: "New name" };
+    dish.trStatus = { ...dish.trStatus, en: "manual" };
+    const next = await refreshTranslations(dish, { translate: async (t) => t, editedNow: new Set(["en"] as const) });
+    expect(next.trStatus.en).toBe("manual");
+    expect(next.name.en).toBe("New name");
   });
 });

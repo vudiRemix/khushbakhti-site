@@ -10,7 +10,7 @@
     "navVisit": "Find us",
     "call": "Call",
     "language": "Site language",
-    "autoNote": "Translated automatically",
+    "autoNote": "* Machine translation, may be inaccurate",
     "photoNote": "Dish photos are temporary",
     "credits": "Photo credits",
     "skip": "Skip to content"
@@ -67,6 +67,10 @@
     "sendTg": "Send via Telegram",
     "callOrder": "Order by phone",
     "noMinimum": "No minimum order.",
+    "clear": "Clear",
+    "copyMessage": "Copy text",
+    "copied": "Text copied",
+    "tgHint": "If the chat opens empty, paste the copied text",
     "remove": "Remove",
     "addOne": "Add one more",
     "guestLanguage": "английский"

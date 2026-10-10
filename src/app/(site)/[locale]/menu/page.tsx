@@ -1,11 +1,14 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { MachineNote } from "@/components/site/MachineNote";
 import { MenuClient } from "@/components/site/MenuClient";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { SiteHeader } from "@/components/site/SiteHeader";
+import { dishName, isMachineTranslated, machineLang } from "@/lib/dish-text";
 import { getDictionary } from "@/lib/i18n";
 import { CITY, localeAlternates } from "@/lib/site";
 import { getMenu } from "@/lib/store";
+import { translatorConfigured } from "@/lib/translate";
 import { isLocale } from "@/lib/types";
 
 export const revalidate = 300;
@@ -46,6 +49,7 @@ export default async function MenuPage({ params }: { params: Promise<{ locale: s
           whatsapp={s.whatsapp}
           telegram={s.telegram}
           fee={s.deliveryFeeTjs}
+          machineLang={machineLang(locale)}
           categories={categories.map((c) => ({ id: c.id, short: c.short[locale], note: c.note?.[locale] }))}
           dishes={dishes.map((d) => ({
             id: d.id,
@@ -54,12 +58,13 @@ export default async function MenuPage({ params }: { params: Promise<{ locale: s
             isNew: d.isNew,
             available: d.available,
             photo: d.photo,
-            name: d.name[locale] || d.name.ru,
+            name: dishName(d, locale),
+            machine: isMachineTranslated(d, locale),
             nameRu: d.name.ru,
             nameTg: d.name.tg || d.name.ru,
           }))}
         />
-        {locale !== "ru" ? <p className="mt-6 text-[14px] text-muted">{t.common.autoNote}</p> : null}
+        {dishes.some((d) => isMachineTranslated(d, locale)) ? <MachineNote note={t.common.autoNote} google={translatorConfigured()} /> : null}
       </main>
       <SiteFooter locale={locale} t={t.common} city={CITY[locale]} />
     </>

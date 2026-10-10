@@ -3,17 +3,19 @@ import { TARGET_LOCALES, type Dish, type TargetLocale } from "./types";
 
 /**
  * Dish names that machine translation tends to mangle. Each Russian term is swapped for the
- * target-language form inside a translate="no" span before the text goes to the translator.
+ * target-language form inside a no-translate span before the text goes to the translator.
+ * `ru` is a regex: declinable words list their case endings («плова», «шурпой»); indeclinable ones match
+ * exactly (so «табака» never catches «табак»).
  */
 export const GLOSSARY: Array<{ ru: string; tg: string; en: string; zh: string }> = [
-  { ru: "плов", tg: "палов", en: "plov", zh: "抓饭" },
-  { ru: "девзира", tg: "девзира", en: "devzira", zh: "德夫兹拉" },
+  { ru: "плов(?:а|у|ом|е|ы)?", tg: "палов", en: "plov", zh: "抓饭" },
+  { ru: "девзир(?:а|ы|у|ой|е)", tg: "девзира", en: "devzira", zh: "德夫兹拉" },
   { ru: "кенча", tg: "кенча", en: "kencha", zh: "肯恰" },
-  { ru: "шурпа", tg: "шӯрбо", en: "shurpa", zh: "肉汤" },
-  { ru: "лагман", tg: "лағмон", en: "lagman", zh: "拉条子" },
-  { ru: "кавурдок", tg: "қовурдоқ", en: "kavurdak", zh: "卡乌尔达克" },
+  { ru: "шурп(?:а|ы|у|ой|ою|е)", tg: "шӯрбо", en: "shurpa", zh: "肉汤" },
+  { ru: "лагман(?:а|у|ом|е|ы|ов)?", tg: "лағмон", en: "lagman", zh: "拉条子" },
+  { ru: "кавурдок(?:а|у|ом|е)?", tg: "қовурдоқ", en: "kavurdak", zh: "卡乌尔达克" },
   { ru: "чазза", tg: "чазза", en: "chazza", zh: "恰扎" },
-  { ru: "мошпиёба", tg: "мошпиёба", en: "moshpiyoba", zh: "绿豆汤" },
+  { ru: "мошпиёб(?:а|ы|у|ой|е)", tg: "мошпиёба", en: "moshpiyoba", zh: "绿豆汤" },
   { ru: "табака", tg: "табака", en: "tabaka", zh: "塔巴卡" },
   { ru: "хушбахти", tg: "Хушбахтӣ", en: "Khushbakhti", zh: "Khushbakhti" },
 ];
@@ -26,6 +28,7 @@ function escapeHtml(s: string): string {
 
 function decodeHtml(s: string): string {
   return s
+    .replace(/&#x([0-9a-f]+);/gi, (_, n: string) => String.fromCodePoint(parseInt(n, 16)))
     .replace(/&#(\d+);/g, (_, n: string) => String.fromCodePoint(Number(n)))
     .replace(/&quot;/g, '"')
     .replace(/&#39;/g, "'")
@@ -42,63 +45,90 @@ export function protectTerms(text: string, target: TargetLocale): string {
     html = html.replace(re, (_, pre: string, word: string) => {
       const capital = word[0] === word[0].toUpperCase();
       const out = capital ? term[target][0].toUpperCase() + term[target].slice(1) : term[target];
-      return `${pre}<span translate="no">${out}</span>`;
+      return `${pre}<span translate="no" class="notranslate">${out}</span>`;
     });
   }
   return html;
 }
 
 export function unprotect(html: string): string {
-  return decodeHtml(html.replace(/<span translate="no">([\s\S]*?)<\/span>/g, "$1")).replace(/\s+/g, " ").trim();
+  return decodeHtml(html.replace(/<span\b[^>]*>([\s\S]*?)<\/span>/g, "$1")).replace(/\s+/g, " ").trim();
 }
 
 export function translatorConfigured(): boolean {
   return !!process.env.GOOGLE_TRANSLATE_API_KEY;
 }
 
-/** Google Cloud Translation v2. Returns null when no key is configured or the call fails. */
+/**
+ * Google Cloud Translation v2 (Basic). Returns null when no key is configured or the call fails
+ * (network, quota, billing), so saving a dish never breaks because of the translator.
+ * Empty strings are not sent: Google bills every request character, even for an empty text.
+ */
 export async function translateTexts(texts: string[], target: TargetLocale): Promise<string[] | null> {
   const key = process.env.GOOGLE_TRANSLATE_API_KEY;
   if (!key) return null;
-  const nonEmpty = texts.map((t) => t.trim());
-  if (nonEmpty.every((t) => !t)) return texts.map(() => "");
-  const res = await fetch(`https://translation.googleapis.com/language/translate/v2?key=${encodeURIComponent(key)}`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      q: nonEmpty.map((t) => protectTerms(t, target)),
-      source: "ru",
-      target: API_LANG[target],
-      format: "html",
-    }),
-  });
-  if (!res.ok) {
-    console.error("Translate API error", res.status, await res.text().catch(() => ""));
+  const trimmed = texts.map((t) => t.trim());
+  const toSend = trimmed.filter(Boolean);
+  if (!toSend.length) return texts.map(() => "");
+  try {
+    const res = await fetch("https://translation.googleapis.com/language/translate/v2", {
+      method: "POST",
+      // The key goes in a header, not the URL, so it never lands in proxy or access logs.
+      headers: { "Content-Type": "application/json", "X-goog-api-key": key },
+      body: JSON.stringify({
+        q: toSend.map((t) => protectTerms(t, target)),
+        source: "ru",
+        target: API_LANG[target],
+        format: "html",
+      }),
+      signal: AbortSignal.timeout(10_000),
+    });
+    if (!res.ok) {
+      console.error("Translate API error", res.status, await res.text().catch(() => ""));
+      return null;
+    }
+    const json = (await res.json()) as { data: { translations: Array<{ translatedText: string }> } };
+    const out = json.data.translations.map((t) => unprotect(t.translatedText));
+    let i = 0;
+    return trimmed.map((t) => (t ? (out[i++] ?? "") : ""));
+  } catch (error) {
+    console.error("Translate API unreachable", error);
     return null;
   }
-  const json = (await res.json()) as { data: { translations: Array<{ translatedText: string }> } };
-  return json.data.translations.map((t, i) => (nonEmpty[i] ? unprotect(t.translatedText) : ""));
 }
 
 /**
- * Bring a dish's translations up to date after its Russian text changed.
- * Manual translations are kept; others are re-translated (status "auto"),
- * or marked "missing" when the translator is unavailable.
+ * Bring a dish's translations up to date. Languages are (re)translated when the Russian text changed
+ * or an earlier attempt failed ("missing"). Hand-written translations are never overwritten: if the Russian
+ * text changes under them they become "stale" so the admin knows to look. Languages typed in this very save
+ * (editedNow) count as up to date.
  */
-export async function refreshTranslations(dish: Dish, translate = translateTexts): Promise<Dish> {
+export async function refreshTranslations(
+  dish: Dish,
+  { translate = translateTexts, editedNow = new Set<TargetLocale>() }: { translate?: typeof translateTexts; editedNow?: Set<TargetLocale> } = {},
+): Promise<Dish> {
   const hash = sourceHash(dish.name.ru, dish.description.ru);
-  if (hash === dish.sourceHash) return dish;
+  const changed = hash !== dish.sourceHash;
+  const handWritten = (l: TargetLocale) => editedNow.has(l) || dish.trStatus[l] === "manual" || dish.trStatus[l] === "stale";
+  const todo = TARGET_LOCALES.filter((l) => !handWritten(l) && (changed || dish.trStatus[l] === "missing"));
+  if (!changed && !todo.length) return dish;
+
   const next: Dish = { ...dish, name: { ...dish.name }, description: { ...dish.description }, trStatus: { ...dish.trStatus }, sourceHash: hash };
-  for (const lang of TARGET_LOCALES) {
-    if (next.trStatus[lang] === "manual") continue;
-    const result = await translate([dish.name.ru, dish.description.ru], lang);
-    if (result) {
-      next.name[lang] = result[0];
-      next.description[lang] = result[1];
-      next.trStatus[lang] = "auto";
-    } else {
-      next.trStatus[lang] = "missing";
-    }
+  if (changed) {
+    for (const l of TARGET_LOCALES) if (!editedNow.has(l) && dish.trStatus[l] === "manual") next.trStatus[l] = "stale";
   }
+  // In parallel, so a slow translator costs one timeout rather than three.
+  const results = await Promise.all(todo.map((l) => translate([dish.name.ru, dish.description.ru], l)));
+  todo.forEach((l, i) => {
+    const result = results[i];
+    if (result) {
+      next.name[l] = result[0];
+      next.description[l] = result[1];
+      next.trStatus[l] = "auto";
+    } else {
+      // Old text (if any) stays visible; the admin sees «Русский текст изменён» and the next save retries.
+      next.trStatus[l] = "missing";
+    }
+  });
   return next;
 }
