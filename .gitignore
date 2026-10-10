@@ -10,3 +10,4 @@ next-env.d.ts
 data/store.json
 public/uploads/
 test-results/
+out-pages/

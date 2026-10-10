@@ -2,6 +2,8 @@ import type { MetadataRoute } from "next";
 import { localeAlternates, siteUrl } from "@/lib/site";
 import { LOCALES } from "@/lib/types";
 
+export const dynamic = "force-static";
+
 export default function sitemap(): MetadataRoute.Sitemap {
   const base = siteUrl();
   const abs = (m: Record<string, string>) => Object.fromEntries(Object.entries(m).map(([k, v]) => [k, `${base}${v}`]));
