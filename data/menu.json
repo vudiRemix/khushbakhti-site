@@ -1,0 +1,395 @@
+{
+  "source": "Фото бумажного меню «Обеденные сеты по будням от семейного ресторана „Хушбахти“», октябрь 2026",
+  "currency": "TJS",
+  "notes": [
+    "draft_translations — черновой машинный перевод, нужна проверка носителем языка.",
+    "Плов: в бумажном меню строка «Девзира» без цены; здесь трактуется как сорт риса для плова по-самаркандски. Уточнить у ресторана.",
+    "Название «Плов по-самаркандски (девзира)» и «Плов кенча» дополнены словом «плов» для понятности."
+  ],
+  "categories": {
+    "soups": {
+      "ru": "Супы",
+      "portion": "0,5 л"
+    },
+    "plov": {
+      "ru": "Плов"
+    },
+    "shashlik": {
+      "ru": "Шашлыки"
+    },
+    "cutlets": {
+      "ru": "Котлеты"
+    },
+    "beef": {
+      "ru": "Блюда из говядины"
+    },
+    "lamb": {
+      "ru": "Блюда из баранины"
+    }
+  },
+  "items": [
+    {
+      "id": "moshpiyoba",
+      "category": "soups",
+      "price_tjs": 10,
+      "is_new": false,
+      "name": {
+        "ru": "Мошпиёба с урюком"
+      },
+      "draft_translations": {
+        "tg": "Мошпиёба бо қайсӣ",
+        "en": "Mung bean soup with dried apricots",
+        "zh": "绿豆汤配杏干"
+      }
+    },
+    {
+      "id": "cheese",
+      "category": "soups",
+      "price_tjs": 10,
+      "is_new": false,
+      "name": {
+        "ru": "Сырный суп"
+      },
+      "draft_translations": {
+        "tg": "Шӯрбои панирӣ",
+        "en": "Cheese soup",
+        "zh": "奶酪汤"
+      }
+    },
+    {
+      "id": "borscht",
+      "category": "soups",
+      "price_tjs": 10,
+      "is_new": false,
+      "name": {
+        "ru": "Борщ по-украински"
+      },
+      "draft_translations": {
+        "tg": "Борщи украинӣ",
+        "en": "Ukrainian borscht",
+        "zh": "乌克兰红菜汤"
+      }
+    },
+    {
+      "id": "shurpa",
+      "category": "soups",
+      "price_tjs": 10,
+      "is_new": false,
+      "name": {
+        "ru": "Шурпа с тефтелями"
+      },
+      "draft_translations": {
+        "tg": "Шӯрбо бо кофта",
+        "en": "Shurpa with meatballs",
+        "zh": "肉丸汤"
+      }
+    },
+    {
+      "id": "khom",
+      "category": "soups",
+      "price_tjs": 22,
+      "is_new": false,
+      "name": {
+        "ru": "Хом шурпа из баранины"
+      },
+      "draft_translations": {
+        "tg": "Хомшӯрбои гӯсфандӣ",
+        "en": "Khom shurpa, lamb",
+        "zh": "清炖羊肉汤"
+      }
+    },
+    {
+      "id": "lagman",
+      "category": "soups",
+      "price_tjs": 35,
+      "is_new": true,
+      "name": {
+        "ru": "Лагман по-уйгурски"
+      },
+      "draft_translations": {
+        "tg": "Лағмони уйғурӣ",
+        "en": "Uyghur lagman",
+        "zh": "维吾尔拉条子"
+      }
+    },
+    {
+      "id": "plovsam",
+      "category": "plov",
+      "price_tjs": 30,
+      "is_new": true,
+      "name": {
+        "ru": "Плов по-самаркандски (девзира)"
+      },
+      "draft_translations": {
+        "tg": "Палови самарқандӣ (девзира)",
+        "en": "Samarkand plov (devzira rice)",
+        "zh": "撒马尔罕抓饭"
+      }
+    },
+    {
+      "id": "kencha",
+      "category": "plov",
+      "price_tjs": 20,
+      "is_new": false,
+      "name": {
+        "ru": "Плов кенча"
+      },
+      "draft_translations": {
+        "tg": "Палови кенча",
+        "en": "Kencha plov",
+        "zh": "肯恰抓饭"
+      }
+    },
+    {
+      "id": "shlamb",
+      "category": "shashlik",
+      "price_tjs": 36,
+      "is_new": false,
+      "name": {
+        "ru": "Шашлык из баранины"
+      },
+      "draft_translations": {
+        "tg": "Кабоби гӯшти гӯсфанд",
+        "en": "Lamb shashlik",
+        "zh": "羊肉串"
+      }
+    },
+    {
+      "id": "shbeef",
+      "category": "shashlik",
+      "price_tjs": 32,
+      "is_new": false,
+      "name": {
+        "ru": "Шашлык из говядины"
+      },
+      "draft_translations": {
+        "tg": "Кабоби гӯшти гов",
+        "en": "Beef shashlik",
+        "zh": "牛肉串"
+      }
+    },
+    {
+      "id": "shtender",
+      "category": "shashlik",
+      "price_tjs": 27,
+      "is_new": true,
+      "name": {
+        "ru": "Шашлык «Нежный»"
+      },
+      "draft_translations": {
+        "tg": "Кабоби «Нарм»",
+        "en": "“Tender” shashlik",
+        "zh": "嫩肉串"
+      }
+    },
+    {
+      "id": "shstuffed",
+      "category": "shashlik",
+      "price_tjs": 24,
+      "is_new": false,
+      "name": {
+        "ru": "Шашлык фаршированный"
+      },
+      "draft_translations": {
+        "tg": "Кабоби пуркардашуда",
+        "en": "Stuffed shashlik",
+        "zh": "酿肉串"
+      }
+    },
+    {
+      "id": "shnapoleon",
+      "category": "shashlik",
+      "price_tjs": 40,
+      "is_new": true,
+      "name": {
+        "ru": "Шашлык «Наполеон»"
+      },
+      "draft_translations": {
+        "tg": "Кабоби «Наполеон»",
+        "en": "“Napoleon” shashlik",
+        "zh": "拿破仑烤串"
+      }
+    },
+    {
+      "id": "wings",
+      "category": "shashlik",
+      "price_tjs": 22,
+      "is_new": false,
+      "name": {
+        "ru": "Крылышки"
+      },
+      "draft_translations": {
+        "tg": "Боли мурғ",
+        "en": "Chicken wings",
+        "zh": "烤鸡翅"
+      }
+    },
+    {
+      "id": "tabaka",
+      "category": "shashlik",
+      "price_tjs": 45,
+      "is_new": false,
+      "name": {
+        "ru": "Цыплята «Табака»"
+      },
+      "draft_translations": {
+        "tg": "Мурғи «Табака»",
+        "en": "Chicken tabaka",
+        "zh": "塔巴卡烤春鸡"
+      }
+    },
+    {
+      "id": "cuthome",
+      "category": "cutlets",
+      "price_tjs": 24,
+      "is_new": false,
+      "name": {
+        "ru": "Котлета домашняя"
+      },
+      "draft_translations": {
+        "tg": "Котлетаи хонагӣ",
+        "en": "Homestyle cutlet",
+        "zh": "家常肉饼"
+      }
+    },
+    {
+      "id": "cutkiev",
+      "category": "cutlets",
+      "price_tjs": 18,
+      "is_new": false,
+      "name": {
+        "ru": "Котлета киевская"
+      },
+      "draft_translations": {
+        "tg": "Котлетаи Киевӣ",
+        "en": "Chicken Kiev",
+        "zh": "基辅鸡排"
+      }
+    },
+    {
+      "id": "cutkh",
+      "category": "cutlets",
+      "price_tjs": 30,
+      "is_new": false,
+      "name": {
+        "ru": "Котлета «Хушбахти»"
+      },
+      "draft_translations": {
+        "tg": "Котлетаи «Хушбахтӣ»",
+        "en": "“Khushbakhti” cutlet",
+        "zh": "Khushbakhti 招牌肉饼"
+      }
+    },
+    {
+      "id": "brisket",
+      "category": "beef",
+      "price_tjs": 40,
+      "is_new": false,
+      "name": {
+        "ru": "Грудинка"
+      },
+      "draft_translations": {
+        "tg": "Гӯшти сина",
+        "en": "Brisket",
+        "zh": "牛胸肉"
+      }
+    },
+    {
+      "id": "kavurdok",
+      "category": "beef",
+      "price_tjs": 32,
+      "is_new": false,
+      "name": {
+        "ru": "Мясо «Кавурдок»"
+      },
+      "draft_translations": {
+        "tg": "Қавурдоқ",
+        "en": "Kavurdok",
+        "zh": "卡乌尔多克炒肉"
+      }
+    },
+    {
+      "id": "turkish",
+      "category": "beef",
+      "price_tjs": 28,
+      "is_new": true,
+      "name": {
+        "ru": "Кебаб по-турецки"
+      },
+      "draft_translations": {
+        "tg": "Кабоби туркӣ",
+        "en": "Turkish kebab",
+        "zh": "土耳其烤肉"
+      }
+    },
+    {
+      "id": "entrecote",
+      "category": "beef",
+      "price_tjs": 35,
+      "is_new": false,
+      "name": {
+        "ru": "Антрекот"
+      },
+      "draft_translations": {
+        "tg": "Антрекот",
+        "en": "Entrecôte",
+        "zh": "牛排"
+      }
+    },
+    {
+      "id": "chazza",
+      "category": "lamb",
+      "price_tjs": 32,
+      "is_new": false,
+      "name": {
+        "ru": "Чазза"
+      },
+      "draft_translations": {
+        "tg": "Чазза",
+        "en": "Chazza",
+        "zh": "恰扎"
+      }
+    },
+    {
+      "id": "kazan",
+      "category": "lamb",
+      "price_tjs": 35,
+      "is_new": false,
+      "name": {
+        "ru": "Казан-кебаб"
+      },
+      "draft_translations": {
+        "tg": "Қазон-кабоб",
+        "en": "Kazan kebab",
+        "zh": "锅烤羊肉"
+      }
+    },
+    {
+      "id": "friedlamb",
+      "category": "lamb",
+      "price_tjs": 50,
+      "is_new": false,
+      "name": {
+        "ru": "Баранина жареная"
+      },
+      "draft_translations": {
+        "tg": "Гӯшти гӯсфанди бирён",
+        "en": "Fried lamb",
+        "zh": "香煎羊肉"
+      }
+    }
+  ],
+  "restaurant": {
+    "name": "Хушбахти",
+    "type": "семейный ресторан",
+    "city": "Худжанд",
+    "address": "ул. Камоли Худжанди, переулок «Хушбахти», 9а",
+    "phone": "+992 92 991 00 09",
+    "instagram": "khushbakhti.family",
+    "slogan": "Вкусное решение для любого события!",
+    "lunch_sets": "по будням",
+    "delivery_city_tjs": 5,
+    "delivery_note": "строка в меню обрезана на фото: «…по городу 5сом» — уточнить",
+    "hours": null
+  }
+}
