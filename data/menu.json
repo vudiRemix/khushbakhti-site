@@ -445,20 +445,29 @@
     "google_maps": "https://maps.app.goo.gl/gsfCWfS1Au8vK1BG6",
     "phone": "+992 92 991 00 09",
     "whatsapp": "https://wa.me/992929910009",
-    "telegram": "https://t.me/+992929910009",
+    "telegram": "https://t.me/Khushbakhti_family",
     "instagram": "khushbakhti.family",
     "slogan": "Вкусное решение для любого события!",
     "hours": {
-      "daily": "10:00–23:00"
+      "open": "10:00",
+      "close": "23:00",
+      "note": "по словам ресторана; дни недели не уточнялись"
     },
     "lunch_sets": "по будням",
     "delivery": {
       "city_fee_tjs": 5,
+      "min_order_tjs": null,
+      "min_order_note": "минимальной суммы нет",
       "channels": [
         "whatsapp",
         "telegram",
         "phone"
-      ]
-    }
+      ],
+      "prefill": {
+        "whatsapp": "https://wa.me/992929910009?text=<текст заказа>",
+        "telegram": "https://t.me/Khushbakhti_family?text=<текст заказа>"
+      }
+    },
+    "telegram_username": "@Khushbakhti_family"
   }
 }
