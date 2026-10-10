@@ -1,6 +1,6 @@
 """Clean up the Khushbakhti logo: denoise JPEG, upscale 4x, remove white background.
 
-Usage: python3 logo.py <input.jpg> <out_dir>
+Usage: python3 logo.py <input.jpg> <out_dir> [pre_upscaled_4x.png]
 """
 import os
 import sys
@@ -15,18 +15,24 @@ os.makedirs(out_dir, exist_ok=True)
 rgb = np.array(ImageOps.exif_transpose(Image.open(src)).convert("RGB"))
 bgr = cv2.cvtColor(rgb, cv2.COLOR_RGB2BGR)
 
-# 1. Remove JPEG blocking/ringing at native size.
-den = cv2.fastNlMeansDenoisingColored(bgr, None, h=5, hColor=5, templateWindowSize=7, searchWindowSize=21)
+if len(sys.argv) > 3:
+    # Pre-upscaled by a neural network (Real-ESRGAN): use as is, only a light unsharp.
+    up = cv2.cvtColor(np.array(Image.open(sys.argv[3]).convert("RGB")), cv2.COLOR_RGB2BGR)
+    blur = cv2.GaussianBlur(up, (0, 0), sigmaX=1.5)
+    sharp = cv2.addWeighted(up, 1.25, blur, -0.25, 0)
+else:
+    # 1. Remove JPEG blocking/ringing at native size.
+    den = cv2.fastNlMeansDenoisingColored(bgr, None, h=5, hColor=5, templateWindowSize=7, searchWindowSize=21)
 
-# 2. Upscale 4x in two 2x steps (less ringing than one big jump), smooth lightly between.
-up = den
-for _ in range(2):
-    up = cv2.resize(up, None, fx=2, fy=2, interpolation=cv2.INTER_CUBIC)
-    up = cv2.bilateralFilter(up, d=5, sigmaColor=18, sigmaSpace=3)
+    # 2. Upscale 4x in two 2x steps (less ringing than one big jump), smooth lightly between.
+    up = den
+    for _ in range(2):
+        up = cv2.resize(up, None, fx=2, fy=2, interpolation=cv2.INTER_CUBIC)
+        up = cv2.bilateralFilter(up, d=5, sigmaColor=18, sigmaSpace=3)
 
-# 3. Unsharp mask to restore edge crispness.
-blur = cv2.GaussianBlur(up, (0, 0), sigmaX=2.2)
-sharp = cv2.addWeighted(up, 1.7, blur, -0.7, 0)
+    # 3. Unsharp mask to restore edge crispness.
+    blur = cv2.GaussianBlur(up, (0, 0), sigmaX=2.2)
+    sharp = cv2.addWeighted(up, 1.7, blur, -0.7, 0)
 
 img = cv2.cvtColor(sharp, cv2.COLOR_BGR2RGB).astype(np.float32)
 base = cv2.cvtColor(up, cv2.COLOR_BGR2RGB).astype(np.float32)  # unsharpened, for alpha

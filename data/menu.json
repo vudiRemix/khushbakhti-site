@@ -1,10 +1,10 @@
 {
-  "source": "Фото бумажного меню «Обеденные сеты по будням от семейного ресторана „Хушбахти“», октябрь 2026",
+  "source": "Бумажное меню «Обеденные сеты по будням от семейного ресторана „Хушбахти“» и ответы владельца, октябрь 2026",
   "currency": "TJS",
   "notes": [
-    "draft_translations — черновой машинный перевод, нужна проверка носителем языка.",
-    "Плов: в бумажном меню строка «Девзира» без цены; здесь трактуется как сорт риса для плова по-самаркандски. Уточнить у ресторана.",
-    "Название «Плов по-самаркандски (девзира)» и «Плов кенча» дополнены словом «плов» для понятности."
+    "Переводы на tg/en/zh — машинный черновик, вычитанный вручную (см. docs/PLAN.md, раздел «Переводы»). Перед запуском желательна финальная проверка носителем таджикского.",
+    "Фото в /photos/temp — временные, с Wikimedia Commons; авторы и лицензии в data/photo-credits.json. У moshpiyoba, cutkh и chazza фото нет.",
+    "Обеденные сеты по будням — это и есть это меню; отдельный раздел не нужен."
   ],
   "categories": {
     "soups": {
@@ -36,11 +36,13 @@
       "name": {
         "ru": "Мошпиёба с урюком"
       },
-      "draft_translations": {
-        "tg": "Мошпиёба бо қайсӣ",
-        "en": "Mung bean soup with dried apricots",
+      "translations": {
+        "tg": "Мошпиёба бо ӯрик",
+        "en": "Moshpiyoba (mung bean soup) with dried apricots",
         "zh": "绿豆汤配杏干"
-      }
+      },
+      "translation_status": "reviewed_draft",
+      "photo": null
     },
     {
       "id": "cheese",
@@ -50,11 +52,13 @@
       "name": {
         "ru": "Сырный суп"
       },
-      "draft_translations": {
+      "translations": {
         "tg": "Шӯрбои панирӣ",
         "en": "Cheese soup",
         "zh": "奶酪汤"
-      }
+      },
+      "translation_status": "reviewed_draft",
+      "photo": "/photos/temp/cheese.webp"
     },
     {
       "id": "borscht",
@@ -64,11 +68,13 @@
       "name": {
         "ru": "Борщ по-украински"
       },
-      "draft_translations": {
+      "translations": {
         "tg": "Борщи украинӣ",
         "en": "Ukrainian borscht",
         "zh": "乌克兰红菜汤"
-      }
+      },
+      "translation_status": "reviewed_draft",
+      "photo": "/photos/temp/borscht.webp"
     },
     {
       "id": "shurpa",
@@ -78,11 +84,13 @@
       "name": {
         "ru": "Шурпа с тефтелями"
       },
-      "draft_translations": {
-        "tg": "Шӯрбо бо кофта",
+      "translations": {
+        "tg": "Шӯрбо бо кӯфта",
         "en": "Shurpa with meatballs",
         "zh": "肉丸汤"
-      }
+      },
+      "translation_status": "reviewed_draft",
+      "photo": "/photos/temp/shurpa.webp"
     },
     {
       "id": "khom",
@@ -92,11 +100,13 @@
       "name": {
         "ru": "Хом шурпа из баранины"
       },
-      "draft_translations": {
-        "tg": "Хомшӯрбои гӯсфандӣ",
-        "en": "Khom shurpa, lamb",
+      "translations": {
+        "tg": "Хомшӯрбо аз гӯшти гӯсфанд",
+        "en": "Khom shurpa (lamb broth)",
         "zh": "清炖羊肉汤"
-      }
+      },
+      "translation_status": "reviewed_draft",
+      "photo": "/photos/temp/khom.webp"
     },
     {
       "id": "lagman",
@@ -106,11 +116,13 @@
       "name": {
         "ru": "Лагман по-уйгурски"
       },
-      "draft_translations": {
+      "translations": {
         "tg": "Лағмони уйғурӣ",
         "en": "Uyghur lagman",
         "zh": "维吾尔拉条子"
-      }
+      },
+      "translation_status": "reviewed_draft",
+      "photo": "/photos/temp/lagman.webp"
     },
     {
       "id": "plovsam",
@@ -118,13 +130,15 @@
       "price_tjs": 30,
       "is_new": true,
       "name": {
-        "ru": "Плов по-самаркандски (девзира)"
+        "ru": "Девзира по-самаркандски"
       },
-      "draft_translations": {
-        "tg": "Палови самарқандӣ (девзира)",
-        "en": "Samarkand plov (devzira rice)",
-        "zh": "撒马尔罕抓饭"
-      }
+      "translations": {
+        "tg": "Девзираи самарқандӣ",
+        "en": "Devzira plov, Samarkand style",
+        "zh": "撒马尔罕德夫兹拉抓饭"
+      },
+      "translation_status": "reviewed_draft",
+      "photo": "/photos/temp/plovsam.webp"
     },
     {
       "id": "kencha",
@@ -132,13 +146,15 @@
       "price_tjs": 20,
       "is_new": false,
       "name": {
-        "ru": "Плов кенча"
+        "ru": "Кенча"
       },
-      "draft_translations": {
-        "tg": "Палови кенча",
+      "translations": {
+        "tg": "Кенча",
         "en": "Kencha plov",
         "zh": "肯恰抓饭"
-      }
+      },
+      "translation_status": "reviewed_draft",
+      "photo": "/photos/temp/kencha.webp"
     },
     {
       "id": "shlamb",
@@ -148,11 +164,13 @@
       "name": {
         "ru": "Шашлык из баранины"
       },
-      "draft_translations": {
+      "translations": {
         "tg": "Кабоби гӯшти гӯсфанд",
         "en": "Lamb shashlik",
         "zh": "羊肉串"
-      }
+      },
+      "translation_status": "reviewed_draft",
+      "photo": "/photos/temp/shlamb.webp"
     },
     {
       "id": "shbeef",
@@ -162,11 +180,13 @@
       "name": {
         "ru": "Шашлык из говядины"
       },
-      "draft_translations": {
+      "translations": {
         "tg": "Кабоби гӯшти гов",
         "en": "Beef shashlik",
         "zh": "牛肉串"
-      }
+      },
+      "translation_status": "reviewed_draft",
+      "photo": "/photos/temp/shbeef.webp"
     },
     {
       "id": "shtender",
@@ -176,11 +196,13 @@
       "name": {
         "ru": "Шашлык «Нежный»"
       },
-      "draft_translations": {
+      "translations": {
         "tg": "Кабоби «Нарм»",
         "en": "“Tender” shashlik",
         "zh": "嫩肉串"
-      }
+      },
+      "translation_status": "reviewed_draft",
+      "photo": "/photos/temp/shtender.webp"
     },
     {
       "id": "shstuffed",
@@ -190,11 +212,13 @@
       "name": {
         "ru": "Шашлык фаршированный"
       },
-      "draft_translations": {
+      "translations": {
         "tg": "Кабоби пуркардашуда",
         "en": "Stuffed shashlik",
         "zh": "酿肉串"
-      }
+      },
+      "translation_status": "reviewed_draft",
+      "photo": "/photos/temp/shstuffed.webp"
     },
     {
       "id": "shnapoleon",
@@ -204,11 +228,13 @@
       "name": {
         "ru": "Шашлык «Наполеон»"
       },
-      "draft_translations": {
+      "translations": {
         "tg": "Кабоби «Наполеон»",
         "en": "“Napoleon” shashlik",
         "zh": "拿破仑烤串"
-      }
+      },
+      "translation_status": "reviewed_draft",
+      "photo": "/photos/temp/shnapoleon.webp"
     },
     {
       "id": "wings",
@@ -218,11 +244,13 @@
       "name": {
         "ru": "Крылышки"
       },
-      "draft_translations": {
-        "tg": "Боли мурғ",
+      "translations": {
+        "tg": "Болҳои мурғ",
         "en": "Chicken wings",
         "zh": "烤鸡翅"
-      }
+      },
+      "translation_status": "reviewed_draft",
+      "photo": "/photos/temp/wings.webp"
     },
     {
       "id": "tabaka",
@@ -232,11 +260,13 @@
       "name": {
         "ru": "Цыплята «Табака»"
       },
-      "draft_translations": {
-        "tg": "Мурғи «Табака»",
+      "translations": {
+        "tg": "Чӯҷаи «Табака»",
         "en": "Chicken tabaka",
         "zh": "塔巴卡烤春鸡"
-      }
+      },
+      "translation_status": "reviewed_draft",
+      "photo": "/photos/temp/tabaka.webp"
     },
     {
       "id": "cuthome",
@@ -246,11 +276,13 @@
       "name": {
         "ru": "Котлета домашняя"
       },
-      "draft_translations": {
+      "translations": {
         "tg": "Котлетаи хонагӣ",
         "en": "Homestyle cutlet",
         "zh": "家常肉饼"
-      }
+      },
+      "translation_status": "reviewed_draft",
+      "photo": "/photos/temp/cuthome.webp"
     },
     {
       "id": "cutkiev",
@@ -260,11 +292,13 @@
       "name": {
         "ru": "Котлета киевская"
       },
-      "draft_translations": {
-        "tg": "Котлетаи Киевӣ",
+      "translations": {
+        "tg": "Котлетаи киевӣ",
         "en": "Chicken Kiev",
         "zh": "基辅鸡排"
-      }
+      },
+      "translation_status": "reviewed_draft",
+      "photo": "/photos/temp/cutkiev.webp"
     },
     {
       "id": "cutkh",
@@ -274,11 +308,13 @@
       "name": {
         "ru": "Котлета «Хушбахти»"
       },
-      "draft_translations": {
+      "translations": {
         "tg": "Котлетаи «Хушбахтӣ»",
         "en": "“Khushbakhti” cutlet",
         "zh": "Khushbakhti 招牌肉饼"
-      }
+      },
+      "translation_status": "reviewed_draft",
+      "photo": null
     },
     {
       "id": "brisket",
@@ -288,11 +324,13 @@
       "name": {
         "ru": "Грудинка"
       },
-      "draft_translations": {
+      "translations": {
         "tg": "Гӯшти сина",
         "en": "Brisket",
         "zh": "牛胸肉"
-      }
+      },
+      "translation_status": "reviewed_draft",
+      "photo": "/photos/temp/brisket.webp"
     },
     {
       "id": "kavurdok",
@@ -302,11 +340,13 @@
       "name": {
         "ru": "Мясо «Кавурдок»"
       },
-      "draft_translations": {
-        "tg": "Қавурдоқ",
-        "en": "Kavurdok",
-        "zh": "卡乌尔多克炒肉"
-      }
+      "translations": {
+        "tg": "Қовурдоқ",
+        "en": "Kavurdak",
+        "zh": "卡乌尔达克炒肉"
+      },
+      "translation_status": "reviewed_draft",
+      "photo": "/photos/temp/kavurdok.webp"
     },
     {
       "id": "turkish",
@@ -316,11 +356,13 @@
       "name": {
         "ru": "Кебаб по-турецки"
       },
-      "draft_translations": {
+      "translations": {
         "tg": "Кабоби туркӣ",
         "en": "Turkish kebab",
         "zh": "土耳其烤肉"
-      }
+      },
+      "translation_status": "reviewed_draft",
+      "photo": "/photos/temp/turkish.webp"
     },
     {
       "id": "entrecote",
@@ -330,11 +372,13 @@
       "name": {
         "ru": "Антрекот"
       },
-      "draft_translations": {
+      "translations": {
         "tg": "Антрекот",
         "en": "Entrecôte",
         "zh": "牛排"
-      }
+      },
+      "translation_status": "reviewed_draft",
+      "photo": "/photos/temp/entrecote.webp"
     },
     {
       "id": "chazza",
@@ -344,11 +388,13 @@
       "name": {
         "ru": "Чазза"
       },
-      "draft_translations": {
+      "translations": {
         "tg": "Чазза",
         "en": "Chazza",
         "zh": "恰扎"
-      }
+      },
+      "translation_status": "reviewed_draft",
+      "photo": null
     },
     {
       "id": "kazan",
@@ -358,11 +404,13 @@
       "name": {
         "ru": "Казан-кебаб"
       },
-      "draft_translations": {
+      "translations": {
         "tg": "Қазон-кабоб",
         "en": "Kazan kebab",
-        "zh": "锅烤羊肉"
-      }
+        "zh": "大锅烤羊肉"
+      },
+      "translation_status": "reviewed_draft",
+      "photo": "/photos/temp/kazan.webp"
     },
     {
       "id": "friedlamb",
@@ -372,24 +420,45 @@
       "name": {
         "ru": "Баранина жареная"
       },
-      "draft_translations": {
+      "translations": {
         "tg": "Гӯшти гӯсфанди бирён",
         "en": "Fried lamb",
         "zh": "香煎羊肉"
-      }
+      },
+      "translation_status": "reviewed_draft",
+      "photo": "/photos/temp/friedlamb.webp"
     }
   ],
   "restaurant": {
     "name": "Хушбахти",
     "type": "семейный ресторан",
     "city": "Худжанд",
-    "address": "ул. Камоли Худжанди, переулок «Хушбахти», 9а",
+    "address": {
+      "ru": "ул. Камоли Худжанди, переулок «Хушбахти», 9а",
+      "tg": "хиёбони Камоли Хуҷандӣ, гузаргоҳи «Хушбахтӣ», 9а"
+    },
+    "coordinates": {
+      "lat": 40.2841711,
+      "lon": 69.6324722,
+      "source": "OpenStreetMap node 3393379027"
+    },
+    "google_maps": "https://maps.app.goo.gl/gsfCWfS1Au8vK1BG6",
     "phone": "+992 92 991 00 09",
+    "whatsapp": "https://wa.me/992929910009",
+    "telegram": "https://t.me/+992929910009",
     "instagram": "khushbakhti.family",
     "slogan": "Вкусное решение для любого события!",
+    "hours": {
+      "daily": "10:00–23:00"
+    },
     "lunch_sets": "по будням",
-    "delivery_city_tjs": 5,
-    "delivery_note": "строка в меню обрезана на фото: «…по городу 5сом» — уточнить",
-    "hours": null
+    "delivery": {
+      "city_fee_tjs": 5,
+      "channels": [
+        "whatsapp",
+        "telegram",
+        "phone"
+      ]
+    }
   }
 }
