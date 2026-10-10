@@ -17,16 +17,10 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   return { title: t.menuTitle, alternates: { canonical: `/${locale}/menu`, languages: localeAlternates("/menu") } };
 }
 
-export default async function MenuPage({
-  params,
-  searchParams,
-}: {
-  params: Promise<{ locale: string }>;
-  searchParams: Promise<{ table?: string }>;
-}) {
+// The table number (?table=N from a QR code) is read in the browser, so this page stays cached like the home page.
+export default async function MenuPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
-  const { table } = await searchParams;
   const t = getDictionary(locale);
   const { categories, dishes, settings: s } = await getMenu();
 
@@ -48,7 +42,6 @@ export default async function MenuPage({
         <MenuClient
           locale={locale}
           t={t.menu}
-          table={table && /^\d{1,3}$/.test(table) ? table : undefined}
           phone={s.phone}
           whatsapp={s.whatsapp}
           telegram={s.telegram}

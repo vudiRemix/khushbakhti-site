@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { AdminShell } from "@/components/admin/AdminShell";
+import { PhotoInput } from "@/components/admin/PhotoInput";
 import { SubmitButton } from "@/components/admin/SubmitButton";
 import { requireAdmin } from "@/lib/auth";
 import { getMenu } from "@/lib/store";
@@ -94,8 +95,10 @@ export default async function DishEditor({
             ) : (
               <p className="m-0 text-[14px] text-muted">Фото нет — на сайте будет «фото скоро».</p>
             )}
-            <label htmlFor="photo" className="font-bold">{dish?.photo ? "Заменить фото" : "Добавить фото"} <span className="font-normal text-muted">(с телефона можно сразу снять)</span></label>
-            <input id="photo" name="photo" type="file" accept="image/*" className="min-h-12 w-full border-[3px] border-dashed border-ink bg-wash p-2 text-[15px] file:mr-3 file:border-0 file:bg-ink file:px-3 file:py-2 file:font-bold file:text-white" />
+            <PhotoInput
+              label={<>{dish?.photo ? "Заменить фото" : "Добавить фото"} <span className="font-normal text-muted">(с телефона можно сразу снять)</span></>}
+              className="min-h-12 w-full border-[3px] border-dashed border-ink bg-wash p-2 text-[15px] file:mr-3 file:border-0 file:bg-ink file:px-3 file:py-2 file:font-bold file:text-white"
+            />
             <span className="text-[13px] text-muted">Фото обрежется до квадрата и сожмётся автоматически.</span>
           </div>
         </fieldset>

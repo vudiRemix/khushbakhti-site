@@ -7,16 +7,34 @@ const COOKIE = "kb_admin";
 const MAX_AGE_S = 60 * 60 * 24 * 30; // 30 days
 const DEV_PASSWORD = "khushbakhti";
 
-/** Admin password; a fixed default only in local development. */
-export function adminPassword(): string | null {
-  if (process.env.ADMIN_PASSWORD) return process.env.ADMIN_PASSWORD;
-  return process.env.NODE_ENV === "production" ? null : DEV_PASSWORD;
+export const MIN_PASSWORD_LENGTH = 12;
+
+/** Why the admin cannot log in yet, or null when the password is usable. */
+export function passwordProblem(): "missing" | "short" | null {
+  const pw = process.env.ADMIN_PASSWORD;
+  if (pw) return pw.length < MIN_PASSWORD_LENGTH ? "short" : null;
+  return devPasswordAllowed() ? null : "missing";
 }
 
+/** The fixed default only works on a developer's computer that is not connected to the real database. */
+function devPasswordAllowed(): boolean {
+  const realData = process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY;
+  return process.env.NODE_ENV !== "production" && !realData;
+}
+
+/** Admin password, or null when login is impossible (not set or too short). */
+export function adminPassword(): string | null {
+  if (passwordProblem()) return null;
+  return process.env.ADMIN_PASSWORD || DEV_PASSWORD;
+}
+
+/**
+ * Cookie signing key. It mixes in the password, so changing ADMIN_PASSWORD signs everyone out,
+ * and is keyed by a server-only secret, so a copied cookie cannot be used to guess the password offline.
+ */
 function secret(): string {
-  const pw = adminPassword() ?? "";
-  // Changing ADMIN_PASSWORD also signs everyone out, because the secret derives from it.
-  return process.env.SESSION_SECRET || createHash("sha256").update(`kb-session:${pw}`).digest("hex");
+  const key = process.env.SESSION_SECRET || process.env.SUPABASE_SERVICE_ROLE_KEY || "kb-session";
+  return createHmac("sha256", key).update(`kb-session:${adminPassword() ?? ""}`).digest("hex");
 }
 
 function sign(value: string): string {

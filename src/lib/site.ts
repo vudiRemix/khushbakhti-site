@@ -1,9 +1,14 @@
 import { LOCALES, type Locale } from "./types";
 
-/** Public address of the site; set SITE_URL in production (e.g. https://khushbakhti.vercel.app). */
+/**
+ * Public address of the site. SITE_URL wins (set it in production, e.g. https://khushbakhti.netlify.app);
+ * otherwise the production address the host reports, otherwise localhost.
+ */
 export function siteUrl(): string {
   const vercel = process.env.VERCEL_PROJECT_PRODUCTION_URL ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}` : "";
-  return (process.env.SITE_URL || vercel || "http://localhost:3000").replace(/\/$/, "");
+  // Netlify exposes URL (with SITE_ID) both while building and inside functions.
+  const netlify = process.env.SITE_ID && process.env.URL?.startsWith("https://") ? process.env.URL : "";
+  return (process.env.SITE_URL || vercel || netlify || "http://localhost:3000").replace(/\/$/, "");
 }
 
 export const CITY: Record<Locale, string> = { ru: "Худжанд", tg: "Хуҷанд", en: "Khujand, Tajikistan", zh: "塔吉克斯坦 苦盏" };

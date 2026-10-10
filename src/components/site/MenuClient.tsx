@@ -35,11 +35,25 @@ interface Props {
   whatsapp: string;
   telegram: string;
   fee: number;
-  table?: string;
 }
 
 const PICKS_KEY = "kb_picks_v1";
 const ADDR_KEY = "kb_addr_v1";
+const TABLE_KEY = "kb_table_v1";
+
+/** Table number from the QR link (?table=N); remembered for this visit so it survives going to the home page and back. */
+function readTable(): string | undefined {
+  const fromUrl = new URLSearchParams(window.location.search).get("table");
+  try {
+    if (fromUrl && /^\d{1,3}$/.test(fromUrl)) {
+      window.sessionStorage.setItem(TABLE_KEY, fromUrl);
+      return fromUrl;
+    }
+    return window.sessionStorage.getItem(TABLE_KEY) ?? undefined;
+  } catch {
+    return fromUrl && /^\d{1,3}$/.test(fromUrl) ? fromUrl : undefined;
+  }
+}
 
 function readJson<T>(key: string, fallback: T): T {
   try {
@@ -50,7 +64,7 @@ function readJson<T>(key: string, fallback: T): T {
   }
 }
 
-export function MenuClient({ locale, t, dishes, categories, phone, whatsapp, telegram, fee, table }: Props) {
+export function MenuClient({ locale, t, dishes, categories, phone, whatsapp, telegram, fee }: Props) {
   const [cat, setCat] = useState("all");
   const [q, setQ] = useState("");
   const [picks, setPicks] = useState<Record<string, number>>({});
@@ -58,8 +72,10 @@ export function MenuClient({ locale, t, dishes, categories, phone, whatsapp, tel
   const [addr, setAddr] = useState("");
   const [waiter, setWaiter] = useState(false);
   const [loaded, setLoaded] = useState(false);
+  const [table, setTable] = useState<string>();
 
   useEffect(() => {
+    setTable(readTable());
     setPicks(readJson(PICKS_KEY, {}));
     setAddr(readJson(ADDR_KEY, ""));
     setLoaded(true);

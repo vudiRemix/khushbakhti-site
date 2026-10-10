@@ -9,8 +9,7 @@
     "start": "next start",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
-    "test": "vitest run",
-    "seed:supabase": "node --experimental-strip-types scripts/seed-supabase.ts"
+    "test": "vitest run"
   },
   "dependencies": {
     "@supabase/supabase-js": "2.117.3",

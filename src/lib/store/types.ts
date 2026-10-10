@@ -1,3 +1,4 @@
+import type { ProcessedPhoto } from "../images";
 import type { Dish, MenuData, Settings } from "../types";
 
 export interface Store {
@@ -8,6 +9,6 @@ export interface Store {
   saveDish(dish: Dish): Promise<void>;
   deleteDish(id: string): Promise<void>;
   saveSettings(settings: Settings): Promise<void>;
-  /** Stores an already processed WebP image and returns its public URL. */
-  uploadPhoto(dishId: string, webp: Buffer): Promise<string>;
+  /** Stores an already processed image and returns its public URL. */
+  uploadPhoto(dishId: string, photo: ProcessedPhoto): Promise<string>;
 }

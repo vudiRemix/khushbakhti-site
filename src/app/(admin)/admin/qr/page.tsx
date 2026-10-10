@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { headers } from "next/headers";
 import QRCode from "qrcode";
 import { AdminShell } from "@/components/admin/AdminShell";
 import { PrintButton } from "@/components/admin/PrintButton";
@@ -7,11 +8,23 @@ import { siteUrl } from "@/lib/site";
 
 export const dynamic = "force-dynamic";
 
+/** SITE_URL when set; otherwise the address this page was opened at, so codes never point at localhost by accident. */
+async function publicOrigin(): Promise<string> {
+  const configured = siteUrl();
+  if (!configured.startsWith("http://localhost")) return configured;
+  const h = await headers();
+  const first = (v: string | null) => v?.split(",")[0].trim() || null;
+  const host = first(h.get("x-forwarded-host")) ?? first(h.get("host"));
+  if (!host) return configured;
+  const proto = first(h.get("x-forwarded-proto")) ?? (host.startsWith("localhost") ? "http" : "https");
+  return `${proto}://${host}`;
+}
+
 export default async function QrPage({ searchParams }: { searchParams: Promise<{ n?: string }> }) {
   await requireAdmin();
   const { n } = await searchParams;
   const count = Math.min(60, Math.max(1, Number(n) || 12));
-  const base = siteUrl();
+  const base = await publicOrigin();
   const codes = await Promise.all(
     Array.from({ length: count }, async (_, i) => {
       const url = `${base}/t/${i + 1}`;
@@ -38,8 +51,8 @@ export default async function QrPage({ searchParams }: { searchParams: Promise<{
           <PrintButton className="btn btn-ink" />
         </form>
       </div>
-      {base.startsWith("http://localhost") ? (
-        <p className="no-print mb-4 border-2 border-stamp bg-white p-3">Адрес сайта не задан (SITE_URL), коды ведут на localhost. Задайте SITE_URL перед печатью.</p>
+      {/^https?:\/\/(localhost|127\.|192\.168\.|10\.)/.test(base) ? (
+        <p className="no-print mb-4 border-2 border-stamp bg-white p-3">Коды ведут на {base} — это адрес компьютера, а не сайта в интернете. Откройте эту страницу на опубликованном сайте или задайте SITE_URL.</p>
       ) : null}
       <div className="grid grid-cols-2 gap-4 md:grid-cols-3 print:grid-cols-3 print:gap-6">
         {codes.map((c) => (
