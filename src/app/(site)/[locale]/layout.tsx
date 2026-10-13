@@ -10,7 +10,7 @@ export function generateStaticParams() {
   return LOCALES.map((locale) => ({ locale }));
 }
 
-export const viewport: Viewport = { themeColor: "#84241E", width: "device-width", initialScale: 1 };
+export const viewport: Viewport = { themeColor: "#171918", width: "device-width", initialScale: 1 };
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params;
@@ -36,7 +36,7 @@ export default async function SiteLayout({ children, params }: { children: React
   if (!isLocale(locale)) notFound();
   return (
     <html lang={HTML_LANG[locale]} className={fontVariables}>
-      <body>{children}</body>
+      <body className="site-dark">{children}</body>
     </html>
   );
 }

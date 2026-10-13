@@ -37,7 +37,10 @@
     "directions": "路线",
     "mapAlt": "地图：Khushbakhti 餐厅位于 Kamoli Khujandi 大街",
     "heroAlt": "撒马尔罕德夫兹拉抓饭",
-    "tempPhoto": "临时图片"
+    "tempPhoto": "临时图片",
+    "viewMenu": "查看菜单",
+    "orderDelivery": "外卖下单",
+    "popular": "热门菜品"
   },
   "menu": {
     "title": "菜单",
@@ -73,6 +76,9 @@
     "tgHint": "如果聊天窗口是空的，请粘贴已复制的文字",
     "remove": "删除",
     "addOne": "再加一份",
-    "guestLanguage": "китайский (中文)"
+    "guestLanguage": "китайский (中文)",
+    "addressRequired": "请输入配送街道、门牌号或地标。",
+    "confirmationNote": "餐厅在聊天中确认后，订单才算受理。",
+    "withDelivery": "含配送费"
   }
 }

@@ -37,7 +37,10 @@
     "directions": "Directions",
     "mapAlt": "Map: Khushbakhti restaurant on Kamoli Khujandi Avenue",
     "heroAlt": "Devzira plov, Samarkand style",
-    "tempPhoto": "Temporary photo"
+    "tempPhoto": "Temporary photo",
+    "viewMenu": "View menu",
+    "orderDelivery": "Order delivery",
+    "popular": "Popular dishes"
   },
   "menu": {
     "title": "Menu",
@@ -73,6 +76,9 @@
     "tgHint": "If the chat opens empty, paste the copied text",
     "remove": "Remove",
     "addOne": "Add one more",
-    "guestLanguage": "английский"
+    "guestLanguage": "английский",
+    "addressRequired": "Enter a street, house number or landmark for delivery.",
+    "confirmationNote": "Your order is accepted once the restaurant confirms it in the chat.",
+    "withDelivery": "With delivery"
   }
 }
