@@ -10,22 +10,17 @@ export function ThemeToggle({ lightLabel, darkLabel }: { lightLabel: string; dar
   const pathname = usePathname();
 
   useEffect(() => {
-    const system = window.matchMedia("(prefers-color-scheme: dark)");
     const sync = () => {
       let preference: string | null = null;
       try { preference = localStorage.getItem(STORAGE_KEY); } catch { /* Storage may be unavailable. */ }
       const theme = preference === "light" || preference === "dark"
         ? preference
-        : document.documentElement.dataset.theme || (system.matches ? "dark" : "light");
+        : document.documentElement.dataset.theme || "light";
       apply(theme === "dark");
-    };
-    const onSystemChange = () => {
-      try { if (["light", "dark"].includes(localStorage.getItem(STORAGE_KEY) || "")) return; } catch { return; }
-      apply(system.matches);
     };
     const onStorage = (event: StorageEvent) => {
       if (event.key === STORAGE_KEY || event.key === null) {
-        document.documentElement.dataset.theme = system.matches ? "dark" : "light";
+        document.documentElement.dataset.theme = "light";
         sync();
       }
     };
@@ -35,10 +30,8 @@ export function ThemeToggle({ lightLabel, darkLabel }: { lightLabel: string; dar
       setDark(isDark);
     }
     sync();
-    system.addEventListener("change", onSystemChange);
     window.addEventListener("storage", onStorage);
     return () => {
-      system.removeEventListener("change", onSystemChange);
       window.removeEventListener("storage", onStorage);
     };
   }, [pathname]);

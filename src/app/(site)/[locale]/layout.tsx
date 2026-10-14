@@ -37,7 +37,7 @@ export default async function SiteLayout({ children, params }: { children: React
   return (
     <html lang={HTML_LANG[locale]} className={fontVariables} suppressHydrationWarning>
       <head>
-        <script dangerouslySetInnerHTML={{ __html: `(function(){var t;try{t=localStorage.getItem('kb_theme')}catch(e){}if(t!=='light'&&t!=='dark')t=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';document.documentElement.dataset.theme=t;var m=document.querySelector('meta[name="theme-color"]');if(m)m.content=t==='dark'?'#171918':'#ffffff'})()` }} />
+        <script dangerouslySetInnerHTML={{ __html: `(function(){var t;try{t=localStorage.getItem('kb_theme')}catch(e){}if(t!=='light'&&t!=='dark')t='light';document.documentElement.dataset.theme=t;var m=document.querySelector('meta[name="theme-color"]');if(m)m.content=t==='dark'?'#171918':'#ffffff'})()` }} />
       </head>
       <body className="site-theme">{children}</body>
     </html>
