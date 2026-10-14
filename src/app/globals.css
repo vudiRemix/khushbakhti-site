@@ -19,6 +19,7 @@
   --color-foreground: #141414;
   --color-outline: #141414;
   --color-accent: #0b7a75;
+  --color-highlight: #84241e;
 }
 
 @theme inline {
@@ -38,7 +39,11 @@
     font-size: 17px;
     line-height: 1.5;
   }
-  .site-dark {
+  .site-theme { color-scheme: light; }
+  .theme-sun { display: none; }
+  [data-theme="dark"] .theme-sun { display: block; }
+  [data-theme="dark"] .theme-moon { display: none; }
+  [data-theme="dark"] .site-theme {
     color-scheme: dark;
     --color-surface: #202522;
     --color-foreground: #f3e9d8;
@@ -47,6 +52,7 @@
     --color-muted: #b9c2bb;
     --color-line: #46534b;
     --color-accent: #76d4c5;
+    --color-highlight: #e3b03c;
     background: #171918;
   }
   /* Chinese pages: use the rounded ZCOOL KuaiLe for headings and Noto Sans SC for text. */

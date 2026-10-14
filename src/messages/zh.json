@@ -13,7 +13,9 @@
     "autoNote": "* 机器翻译，可能不准确",
     "photoNote": "菜品图片为临时图片",
     "credits": "图片作者",
-    "skip": "跳到正文"
+    "skip": "跳到正文",
+    "lightTheme": "切换为浅色主题",
+    "darkTheme": "切换为深色主题"
   },
   "home": {
     "signSub": "苦盏的家庭餐厅，适合各种聚会的美味之选。",

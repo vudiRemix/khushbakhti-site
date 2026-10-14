@@ -1,3 +1,4 @@
+import { ThemeToggle } from "./ThemeToggle";
 import Image from "next/image";
 import Link from "next/link";
 import { HTML_LANG, LOCALE_LABELS, type Dictionary } from "@/lib/i18n";
@@ -11,14 +12,15 @@ export function SiteHeader({ locale, path, t, phone }: { locale: Locale; path: s
         {t.skip}
       </a>
       <div className="mx-auto flex max-w-[1280px] flex-wrap items-center justify-between gap-x-3 gap-y-1 px-4 py-2 sm:px-6">
-        <Link href={`/${locale}`} className="flex items-center gap-2 text-gold no-underline">
+        <Link href={`/${locale}`} className="flex items-center gap-2 text-highlight no-underline">
           <Image src="/brand/khushbakhti-logo-256.png" alt="" width={80} height={61} priority className="h-[38px] w-auto sm:h-[52px]" />
           <span className="sign-text text-[21px] leading-none sm:text-[32px]">{t.brand}</span>
         </Link>
-        <nav aria-label={t.navMenu} className="order-3 flex w-full items-center gap-x-6 text-[15px] font-bold md:order-none md:w-auto md:flex-auto">
-          <Link href={`/${locale}/menu`} className="py-2.5 text-foreground hover:text-gold">{t.navMenu}</Link>
-          <Link href={`/${locale}#visit`} className="py-2.5 text-foreground hover:text-gold">{t.navVisit}</Link>
-          <a href={telHref(phone)} className="ml-auto py-2.5 text-gold md:hidden">{t.call}</a>
+        <nav aria-label={t.navMenu} className="order-3 flex w-full items-center gap-x-3 text-[15px] font-bold md:order-none md:w-auto md:flex-auto">
+          <Link href={`/${locale}/menu`} className="py-2.5 text-foreground hover:text-highlight">{t.navMenu}</Link>
+          <Link href={`/${locale}#visit`} className="py-2.5 text-foreground hover:text-highlight">{t.navVisit}</Link>
+          <ThemeToggle lightLabel={t.lightTheme} darkLabel={t.darkTheme} />
+          <a href={telHref(phone)} className="py-2.5 text-highlight md:hidden">{t.call}</a>
         </nav>
         <div role="group" aria-label={t.language} className="flex border-2 border-outline">
           {LOCALES.map((l) => (

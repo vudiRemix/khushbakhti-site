@@ -13,7 +13,9 @@
     "autoNote": "* Machine translation, may be inaccurate",
     "photoNote": "Dish photos are temporary",
     "credits": "Photo credits",
-    "skip": "Skip to content"
+    "skip": "Skip to content",
+    "lightTheme": "Switch to light theme",
+    "darkTheme": "Switch to dark theme"
   },
   "home": {
     "signSub": "Family restaurant in Khujand. A tasty choice for any occasion.",

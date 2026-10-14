@@ -88,7 +88,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
               {board.map((b) => (
                 <div key={b.name} className="flex flex-col gap-1">
                   <span className="text-[14px] text-muted">{b.name}</span>
-                  <span className={`font-bold ${b.on ? "text-gold" : "text-muted"}`}>{b.state}</span>
+                  <span className={`font-bold ${b.on ? "text-highlight" : "text-muted"}`}>{b.state}</span>
                 </div>
               ))}
               <div className="flex flex-col gap-1">

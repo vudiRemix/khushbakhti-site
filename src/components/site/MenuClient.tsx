@@ -187,7 +187,7 @@ export function MenuClient({ locale, t, dishes, categories, phone, whatsapp, tel
               <li key={dish.id} className="flex items-baseline justify-between gap-4 border-b border-line py-3.5">
                 <div className="flex min-w-0 flex-col">
                   <span className="text-[24px] font-bold leading-tight sm:text-[30px]">
-                    {dish.nameRu} <span className="text-gold">× {qty}</span>
+                    {dish.nameRu} <span className="text-highlight">× {qty}</span>
                   </span>
                   <span lang="tg" className="text-muted">{dish.nameTg}</span>
                 </div>
@@ -305,7 +305,7 @@ export function MenuClient({ locale, t, dishes, categories, phone, whatsapp, tel
           <div className="flex flex-col gap-3.5 px-5 pb-6 pt-5">
             <div className="flex items-baseline justify-between gap-3">
               <h2 id="my-table-title" className="sign-text m-0 text-[34px] leading-none">{t.myTable}</h2>
-              <span className="sign-text text-[26px] text-gold">{table ? `${t.table} ${table} · ` : ""}{count}</span>
+              <span className="sign-text text-[26px] text-highlight">{table ? `${t.table} ${table} · ` : ""}{count}</span>
             </div>
             <div role="tablist" aria-label={t.myTable} className="flex">
               {(["hall", "delivery"] as const).map((m) => (
@@ -338,7 +338,7 @@ export function MenuClient({ locale, t, dishes, categories, phone, whatsapp, tel
               ))}
             </ul>
             {picked.length ? (
-              <button type="button" onClick={() => setPicks({})} className="self-end text-[15px] font-bold text-gold underline">
+              <button type="button" onClick={() => setPicks({})} className="self-end text-[15px] font-bold text-highlight underline">
                 {t.clear}
               </button>
             ) : null}
@@ -371,7 +371,7 @@ export function MenuClient({ locale, t, dishes, categories, phone, whatsapp, tel
                     placeholder={t.addrPh}
                     className={`min-h-12 w-full border-[3px] bg-surface px-3 ${addressError ? "border-gold" : "border-outline"}`}
                   />
-                  {addressError ? <p id="delivery-address-error" role="alert" className="mb-0 mt-2 text-[15px] text-gold">{t.addressRequired}</p> : null}
+                  {addressError ? <p id="delivery-address-error" role="alert" className="mb-0 mt-2 text-[15px] text-highlight">{t.addressRequired}</p> : null}
                 </div>
                 <div className="flex justify-between text-muted">
                   <span>{t.deliveryFee}</span>

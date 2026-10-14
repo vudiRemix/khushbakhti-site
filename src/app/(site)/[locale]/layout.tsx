@@ -10,7 +10,7 @@ export function generateStaticParams() {
   return LOCALES.map((locale) => ({ locale }));
 }
 
-export const viewport: Viewport = { themeColor: "#171918", width: "device-width", initialScale: 1 };
+export const viewport: Viewport = { themeColor: "#ffffff", width: "device-width", initialScale: 1 };
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params;
@@ -35,8 +35,11 @@ export default async function SiteLayout({ children, params }: { children: React
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
   return (
-    <html lang={HTML_LANG[locale]} className={fontVariables}>
-      <body className="site-dark">{children}</body>
+    <html lang={HTML_LANG[locale]} className={fontVariables} suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: `(function(){var t;try{t=localStorage.getItem('kb_theme')}catch(e){}if(t!=='light'&&t!=='dark')t=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';document.documentElement.dataset.theme=t;var m=document.querySelector('meta[name="theme-color"]');if(m)m.content=t==='dark'?'#171918':'#ffffff'})()` }} />
+      </head>
+      <body className="site-theme">{children}</body>
     </html>
   );
 }
