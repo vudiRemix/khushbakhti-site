@@ -30,9 +30,9 @@ export default async function MenuPage({ params }: { params: Promise<{ locale: s
   return (
     <>
       <SiteHeader locale={locale} path="/menu" t={t.common} phone={s.phone} />
-      <main id="main" className="mx-auto max-w-[1280px] px-4 pb-0 pt-8 sm:px-6 lg:pb-20">
+      <main id="main" className="menu-shell mx-auto max-w-[1280px] px-4 pb-0 pt-8 sm:px-6 lg:pb-20">
         <div className="mb-5 flex flex-wrap items-end gap-4">
-          <h1 className="sign-text m-0 bg-burgundy px-5 pb-2 pt-2.5 text-[56px] leading-none text-gold sm:text-[64px]">{t.menu.title}</h1>
+          <h1 className="sign-text m-0 py-2 text-[48px] leading-none text-highlight sm:text-[64px]">{t.menu.title}</h1>
           <div className="flex flex-col pb-1 text-[16px]">
             <span className="font-bold">{t.home.priceNote}</span>
             <span>{t.home.setsNote}</span>

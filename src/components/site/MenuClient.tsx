@@ -1,7 +1,8 @@
 "use client";
 
+import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useId, useMemo, useRef, useState } from "react";
 import type { Dictionary } from "@/lib/i18n";
 import { money, telHref } from "@/lib/format";
 import { buildDeliveryMessage, orderTotal, telegramLink, whatsappLink } from "@/lib/order";
@@ -85,6 +86,7 @@ function readJson<T>(key: string, fallback: T): T {
 }
 
 export function MenuClient({ locale, t, dishes, categories, phone, whatsapp, telegram, fee, machineLang }: Props) {
+  const categoryIndicator = useId();
   const [cat, setCat] = useState("all");
   const [q, setQ] = useState("");
   const [picks, setPicks] = useState<Record<string, number>>({});
@@ -171,7 +173,7 @@ export function MenuClient({ locale, t, dishes, categories, phone, whatsapp, tel
 
   if (waiter) {
     return (
-      <section aria-label="Для официанта" lang="ru" className="mx-auto max-w-[760px] border-[3px] border-outline bg-surface">
+      <section aria-label="Для официанта" lang="ru" className="mx-auto max-w-[760px] border border-outline bg-surface">
         <Pakhta id="pakhta-waiter" height={28} />
         <div className="flex flex-col gap-4 px-5 pb-8 pt-6 sm:px-8">
           <div className="flex flex-col gap-0.5">
@@ -213,7 +215,7 @@ export function MenuClient({ locale, t, dishes, categories, phone, whatsapp, tel
         <div className="flex flex-wrap items-end justify-between gap-5">
           <div className="min-w-[260px] flex-[0_1_420px]">
             <label htmlFor="menu-search" className="mb-1 block text-[15px] font-bold">{t.searchLabel}</label>
-            <div className="flex min-h-[52px] items-center gap-2.5 border-[3px] border-outline px-3.5">
+            <div className="flex min-h-[52px] items-center gap-2.5 border border-outline px-3.5">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" aria-hidden="true">
                 <circle cx="11" cy="11" r="7" />
                 <path d="M20 20l-4-4" />
@@ -229,7 +231,7 @@ export function MenuClient({ locale, t, dishes, categories, phone, whatsapp, tel
             </div>
           </div>
         </div>
-        <nav aria-label={t.title} className="-mb-[3px] flex overflow-x-auto">
+        <nav aria-label={t.title} className="menu-categories flex overflow-x-auto">
           {[{ id: "all", short: t.all }, ...categories].map((c) => {
             const on = c.id === cat;
             return (
@@ -238,10 +240,9 @@ export function MenuClient({ locale, t, dishes, categories, phone, whatsapp, tel
                 type="button"
                 aria-pressed={on}
                 onClick={() => setCat(c.id)}
-                className={`sign-text -mr-[3px] min-h-[52px] flex-none whitespace-nowrap border-[3px] px-5 text-[19px] ${
-                  on ? "border-turq border-b-turq bg-turq text-white" : "border-outline bg-surface text-foreground hover:bg-wash"
-                }`}
+                className="category-button"
               >
+                {on ? <motion.span layoutId={categoryIndicator} className="category-indicator" aria-hidden="true" transition={{ type: "spring", stiffness: 420, damping: 36 }} /> : null}
                 {c.short}
               </button>
             );
@@ -249,15 +250,15 @@ export function MenuClient({ locale, t, dishes, categories, phone, whatsapp, tel
         </nav>
       </div>
 
-      <div className="mt-0 flex flex-wrap items-start gap-9 border-t-[3px] border-outline pt-6">
+      <div className="mt-0 flex flex-wrap items-start gap-9 border-t border-line pt-2">
         <div className="min-w-0 flex-[999_1_600px]">
-          {visible.length === 0 ? <p className="m-0 border-[3px] border-dashed border-outline p-6">{t.nothing}</p> : null}
+          {visible.length === 0 ? <p className="m-0 border border-dashed border-outline p-6">{t.nothing}</p> : null}
           <div className="grid gap-x-9 lg:grid-cols-2">
             {visible.map((d) => {
               const qty = picks[d.id] ?? 0;
               const note = noteByCat.get(d.category);
               return (
-                <article key={d.id} className="flex gap-4 border-b-2 border-outline py-5">
+                <article key={d.id} className="flex gap-4 border-b border-outline py-5">
                   {d.photo ? (
                     <Image
                       src={d.photo}
@@ -265,18 +266,18 @@ export function MenuClient({ locale, t, dishes, categories, phone, whatsapp, tel
                       width={264}
                       height={264}
                       sizes="132px"
-                      className={`size-[104px] flex-none border-[3px] border-outline object-cover sm:size-[132px] ${d.available ? "" : "opacity-50 grayscale"}`}
+                      className={`size-[104px] flex-none object-cover sm:size-[132px] ${d.available ? "" : "opacity-50 grayscale"}`}
                     />
                   ) : (
-                    <div className="flex size-[104px] flex-none items-center justify-center border-[3px] border-dashed border-outline bg-wash p-2 text-center text-[14px] text-muted sm:size-[132px]">
+                    <div className="flex size-[104px] flex-none items-center justify-center border border-dashed border-outline bg-wash p-2 text-center text-[14px] text-muted sm:size-[132px]">
                       {t.photoSoon}
                     </div>
                   )}
                   <div className="flex min-w-0 flex-1 flex-col gap-1.5">
                     <div className="flex flex-wrap items-center gap-2">
-                      <h2 lang={d.machine ? machineLang : undefined} className={`sign-text m-0 text-[22px] leading-[1.05] sm:text-[26px] ${d.available ? "" : "text-muted line-through"}`}>{d.name}{d.machine ? "*" : ""}</h2>
+                      <h2 lang={d.machine ? machineLang : undefined} className={`m-0 text-[20px] font-bold leading-[1.3] sm:text-[23px] ${d.available ? "" : "text-muted line-through"}`}>{d.name}{d.machine ? "*" : ""}</h2>
                       {d.isNew ? <span className="stamp-new">{t.new}</span> : null}
-                      {!d.available ? <span className="-rotate-3 border-2 border-outline px-1.5 text-[13px] font-bold uppercase">{t.soldOut}</span> : null}
+                      {!d.available ? <span className="-rotate-3 border border-outline px-1.5 text-[13px] font-bold uppercase">{t.soldOut}</span> : null}
                     </div>
                     {note ? <p className="m-0 text-[15px] text-muted">{note}</p> : null}
                     <div className="mt-auto flex items-center justify-between gap-3 pt-1.5">
@@ -300,7 +301,7 @@ export function MenuClient({ locale, t, dishes, categories, phone, whatsapp, tel
           </div>
         </div>
 
-        <aside id="my-table" aria-labelledby="my-table-title" className="min-w-0 flex-[1_1_340px] scroll-mt-4 border-[3px] border-outline bg-surface lg:sticky lg:top-4">
+        <aside id="my-table" aria-labelledby="my-table-title" className="min-w-0 flex-[1_1_340px] scroll-mt-4 border border-outline bg-surface lg:sticky lg:top-4">
           <Pakhta id="pakhta-aside" height={22} />
           <div className="flex flex-col gap-3.5 px-5 pb-6 pt-5">
             <div className="flex items-baseline justify-between gap-3">
@@ -315,7 +316,7 @@ export function MenuClient({ locale, t, dishes, categories, phone, whatsapp, tel
                   role="tab"
                   aria-selected={mode === m}
                   onClick={() => setMode(m)}
-                  className={`-mr-0.5 min-h-[46px] flex-1 border-2 border-outline px-2.5 text-[15px] font-bold ${mode === m ? "bg-ink text-white" : "bg-surface text-foreground"}`}
+                  className={`-mr-0.5 min-h-[46px] flex-1 border border-outline px-2.5 text-[15px] font-bold ${mode === m ? "bg-ink text-white" : "bg-surface text-foreground"}`}
                 >
                   {m === "hall" ? t.hall : t.deliveryTab}
                 </button>
@@ -329,7 +330,7 @@ export function MenuClient({ locale, t, dishes, categories, phone, whatsapp, tel
                     <span className={`font-bold ${dish.available ? "" : "text-muted line-through"}`}>{dish.name}</span>
                     <span className="text-[15px] text-muted">{dish.available ? `${qty} × ${money(locale, dish.price)}` : t.soldOut}</span>
                   </div>
-                  <div className="flex items-center border-2 border-outline">
+                  <div className="flex items-center border border-outline">
                     <button type="button" onClick={() => setQty(dish.id, dish.available ? qty - 1 : 0)} aria-label={`${t.remove}: ${dish.name}`} className="size-10 bg-surface text-[20px] font-bold">−</button>
                     <span className="min-w-7 text-center font-bold">{qty}</span>
                     <button type="button" disabled={!dish.available} onClick={() => setQty(dish.id, qty + 1)} aria-label={`${t.addOne}: ${dish.name}`} className="size-10 bg-ink text-[20px] font-bold text-white disabled:bg-line disabled:text-muted">+</button>
@@ -369,7 +370,7 @@ export function MenuClient({ locale, t, dishes, categories, phone, whatsapp, tel
                     value={addr}
                     onChange={(e) => { setAddr(e.target.value); setAddressError(false); setCopied(false); }}
                     placeholder={t.addrPh}
-                    className={`min-h-12 w-full border-[3px] bg-surface px-3 ${addressError ? "border-gold" : "border-outline"}`}
+                    className={`min-h-12 w-full border bg-surface px-3 ${addressError ? "border-gold" : "border-outline"}`}
                   />
                   {addressError ? <p id="delivery-address-error" role="alert" className="mb-0 mt-2 text-[15px] text-highlight">{t.addressRequired}</p> : null}
                 </div>
@@ -384,7 +385,7 @@ export function MenuClient({ locale, t, dishes, categories, phone, whatsapp, tel
                 {ordered.length ? (
                   <div>
                     <span className="mb-1 block text-[15px] font-bold">{t.messageLabel}</span>
-                    <p lang="ru" className="m-0 whitespace-pre-line border-2 border-outline bg-wash p-3 text-[14px]">{message}</p>
+                    <p lang="ru" className="m-0 whitespace-pre-line border border-outline bg-wash p-3 text-[14px]">{message}</p>
                   </div>
                 ) : null}
                 {ordered.length ? (
@@ -408,15 +409,17 @@ export function MenuClient({ locale, t, dishes, categories, phone, whatsapp, tel
         </aside>
       </div>
 
+      <AnimatePresence initial={false}>
       {count > 0 ? (
-        <div className="sticky bottom-0 z-10 -mx-4 mt-6 flex border-t-[3px] border-outline sm:-mx-6 lg:hidden">
+        <motion.div key="cart" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.18 }} className="cart-bar sticky bottom-0 z-10 -mx-4 mt-6 flex border-t-[3px] border-outline sm:-mx-6 lg:hidden">
           <div className="flex flex-1 items-baseline justify-between bg-turq px-4 py-2 text-white">
             <span className="text-[14px]">{mode === "delivery" ? t.withDelivery : t.myTable} · {count}</span>
             <span className="sign-text text-[26px]" aria-live="polite">{money(locale, payable)}</span>
           </div>
           <a href="#my-table" className="flex items-center bg-ink px-4 font-bold text-white no-underline">{t.myTable} ↓</a>
-        </div>
+        </motion.div>
       ) : null}
+      </AnimatePresence>
     </>
   );
 }

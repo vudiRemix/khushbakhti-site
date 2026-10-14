@@ -1,3 +1,4 @@
+import { MotionProvider } from "@/components/site/MotionUI";
 import type { Metadata, Viewport } from "next";
 import { notFound } from "next/navigation";
 import { fontVariables } from "../../fonts";
@@ -39,7 +40,7 @@ export default async function SiteLayout({ children, params }: { children: React
       <head>
         <script dangerouslySetInnerHTML={{ __html: `(function(){var t;try{t=localStorage.getItem('kb_theme')}catch(e){}if(t!=='light'&&t!=='dark')t='light';document.documentElement.dataset.theme=t;var m=document.querySelector('meta[name="theme-color"]');if(m)m.content=t==='dark'?'#171918':'#ffffff'})()` }} />
       </head>
-      <body className="site-theme">{children}</body>
+      <body className="site-theme"><MotionProvider>{children}</MotionProvider></body>
     </html>
   );
 }
