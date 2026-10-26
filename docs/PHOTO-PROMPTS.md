@@ -16,17 +16,38 @@
 ## Общий стиль — отправить первым
 
 ```
-I will ask you for a series of food photos for the menu of a family restaurant in Khujand, Tajikistan.
-Keep ONE consistent style for all of them:
-- realistic professional food photography, square 1:1 image;
-- camera at about 45 degrees, the dish fills about 70% of the frame, centered;
-- soft natural daylight from the left, gentle shadows, no harsh flash;
-- served on traditional Central Asian ceramics: white plate or lagan with the blue "pakhta" (cotton boll) pattern, or a simple white plate when stated;
-- dark walnut wooden table; at most one small prop (a piece of round Tajik non bread, a small bowl of green tea or a few herbs), never cluttered;
-- generous restaurant portion, appetizing but honest, no exaggerated steam or glossy fake shine;
-- no text, no logos, no hands, no people, no cutlery in the foreground.
+I will ask you for a series of photos of dishes for the menu of a small family restaurant in Khujand, Tajikistan.
+They must look like REAL photos taken in the restaurant, not like AI images or studio stock. Keep this style for every photo:
+
+Camera and light
+- shot on a modern smartphone or a simple mirrorless camera, 35–50 mm equivalent, angle about 45 degrees, square 1:1;
+- natural daylight from a window on the left, slightly uneven, with real soft shadows; neutral white balance — no yellow or orange tint;
+- realistic depth of field: the front of the dish is sharp, the background softly blurred, no artificial bokeh shapes;
+- normal contrast and saturation, as a phone photo looks without filters; a little natural grain is fine.
+
+The food
+- real restaurant portion, served the way a busy kitchen serves it: a few crumbs, a drop of oil or sauce on the plate rim, herbs not perfectly placed;
+- real textures: uneven char on grilled meat, individual rice grains, fat that glistens only where it would, slightly irregular shapes;
+- no exaggerated steam, no glossy plastic shine, no perfectly symmetrical arrangement.
+
+Setting
+- dark walnut wooden table with visible wear and grain; the dish is not perfectly centered;
+- traditional Central Asian ceramics with the blue "pakhta" (cotton boll) pattern drawn correctly and consistently, or a plain white plate when I say so;
+- at most one or two everyday props (a piece of round Tajik non bread, a glass cup of green tea), partly cut off by the frame edge.
+
+Never: text, logos, watermarks, hands, people, cutlery in the foreground, warped or melted objects, impossible reflections.
 Reply "ready" and wait for the dishes.
 ```
+
+**Проверка перед загрузкой** — если видите что-то из этого, попросите переделать:
+- узор на тарелке «плывёт», линии рвутся или повторяются странно;
+- еда слишком гладкая и блестящая, как пластиковая;
+- всё идеально симметрично, зелень разложена «по линейке»;
+- фото в жёлто-оранжевом оттенке (попросите: *neutral white balance, cooler daylight*);
+- лишние предметы: ложка без ручки, двойной край тарелки, хлеб, срастающийся со столом.
+
+Полезные фразы для доработки: *more realistic, less perfect, like an unedited phone photo*,
+*make the meat texture more natural*, *remove the steam*, *less saturated colors*.
 
 ---
 
@@ -39,7 +60,7 @@ Wide 3:2 horizontal photo in the same style: a large traditional lagan with Sama
 
 ## Супы (порция 0,5 л)
 
-**Мошпиёба с урюком**
+**Мошпиёба с урюком** (маш — бобовая крупа, по-английски mung beans)
 ```
 Moshpiyoba — thick Tajik mung bean and rice soup in a deep bowl with blue pakhta pattern: creamy green-brown texture, whole mung beans, small pieces of beef, a few dried apricots (urik) with the stone, a dollop of suzma (sour yogurt) and chopped dill on top.
 ```
@@ -132,7 +153,7 @@ Chicken Kiev: a golden breaded chicken cutlet cut open with melted herb butter r
 
 **Котлета «Хушбахти»**
 ```
-"Khushbakhti" signature cutlet on a white plate: [a large golden cutlet with a filling — describe what the chef puts inside], cut in half to show the inside, with a light vegetable side.
+"Khushbakhti" signature cutlet on a white plate: a long, oval minced BEEF cutlet (noticeably longer and slimmer than a chicken Kiev), fried to a golden-brown crust, cut in half so a creamy butter-cream sauce flows out of the center onto the plate. Light side of [fries] and a few slices of fresh tomato and cucumber.
 ```
 
 ## Говядина
@@ -161,7 +182,7 @@ Entrecôte: a thick grilled beef steak with grill marks, sliced to show a juicy 
 
 **Чазза**
 ```
-Chazza — Tajik dish of [lamb pieces fried until crispy in their own fat with onion], served in a deep plate with blue pakhta pattern, golden and crisp, chopped herbs on top, a piece of non bread.
+Chazza — Tajik dish of lamb pieces fried until crispy in their own fat with onion, served in a deep plate with blue pakhta pattern, golden and crisp, chopped herbs on top, a piece of non bread.
 ```
 
 **Казан-кебаб**
