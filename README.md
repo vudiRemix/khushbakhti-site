@@ -2,7 +2,8 @@
 
 Меню на русском, таджикском, английском и китайском, «Мой стол» (показать официанту или заказать доставку через WhatsApp / Telegram / звонок), QR-коды на столах и админка для телефона и компьютера с автопереводом блюд.
 
-- **Опубликовать сайт:** [`docs/DEPLOY.md`](docs/DEPLOY.md)
+- **Свой сервер + домен:** [`docs/DEPLOY-SERVER.md`](docs/DEPLOY-SERVER.md)
+- Бесплатный хостинг без домена: [`docs/DEPLOY.md`](docs/DEPLOY.md)
 - План и решения: [`docs/PLAN.md`](docs/PLAN.md)
 - Дизайн-система: [`docs/DESIGN.md`](docs/DESIGN.md)
 

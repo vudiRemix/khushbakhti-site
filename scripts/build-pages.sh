@@ -10,7 +10,7 @@ WORK="$(mktemp -d)"
 trap 'rm -rf "$WORK"' EXIT
 cp -r "$ROOT"/{src,public,data,package.json,next.config.ts,tsconfig.json,postcss.config.mjs} "$WORK"/
 ln -s "$ROOT/node_modules" "$WORK/node_modules"
-rm -rf "$WORK/src/app/(admin)" "$WORK/src/components/admin" "$WORK/src/app/(site)/t" "$WORK/src/middleware.ts" "$WORK/data/store.json"
+rm -rf "$WORK/src/app/(admin)" "$WORK/src/components/admin" "$WORK/src/app/(site)/t" "$WORK/src/app/uploads" "$WORK/src/middleware.ts" "$WORK/data/store.json"
 (cd "$WORK" && STATIC_EXPORT=1 NEXT_PUBLIC_BASE_PATH="$BASE" SITE_URL="$URL" npx next build)
 OUT="$ROOT/out-pages"
 rm -rf "$OUT" && cp -r "$WORK/out" "$OUT"
