@@ -1,3 +1,4 @@
+import { existsSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 import { getDictionary } from "./i18n";
 import { detectLocale } from "./locale-detect";
@@ -74,8 +75,11 @@ describe("seed", () => {
     const ids = new Set(menu.categories.map((c) => c.id));
     for (const d of menu.dishes) expect(ids.has(d.category), d.id).toBe(true);
   });
-  it("credits every temporary photo", () => {
-    for (const d of menu.dishes) if (d.photo?.startsWith("/photos/temp/")) expect(d.photoCredit, d.id).not.toBeNull();
+  it("gives every dish a photo that exists", () => {
+    for (const d of menu.dishes) {
+      expect(d.photo, d.id).toBe(`/photos/dishes/${d.id}.webp`);
+      expect(existsSync(`public${d.photo}`), d.id).toBe(true);
+    }
   });
   it("matches the confirmed facts", () => {
     expect(menu.settings.telegram).toBe("Khushbakhti_family");

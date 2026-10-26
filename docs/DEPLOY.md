@@ -161,4 +161,4 @@ npm test && npm run lint && npm run typecheck && npm run build
 
 - Без переменных Supabase данные хранятся в `data/store.json`, фото — в `public/uploads/` (оба в `.gitignore`). На хостинге этот режим только для чтения.
 - Начальное меню — `data/menu.json` и `src/lib/seed.ts`. Если база Supabase пустая, сайт заполняет её из них сам.
-- Временные фото блюд — `public/photos/temp/`, авторы и лицензии — `data/photo-credits.json` (страница «Фото» на сайте). Когда загружаете своё фото, подпись автора убирается автоматически.
+- Фото блюд по умолчанию — `public/photos/dishes/<id>.webp` (иллюстрации, сгенерированы по `docs/PHOTO-PROMPTS.md`), главное фото — `hero-plov.webp`. Фото, загруженное в админке, заменяет иллюстрацию.

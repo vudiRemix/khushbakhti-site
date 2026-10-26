@@ -11,8 +11,8 @@
     "call": "Call",
     "language": "Site language",
     "autoNote": "* Machine translation, may be inaccurate",
-    "photoNote": "Dish photos are temporary",
-    "credits": "Photo credits",
+    "photoNote": "Dish photos are illustrative",
+    "credits": "About images",
     "skip": "Skip to content"
   },
   "home": {
@@ -36,8 +36,7 @@
     "deliveryLine": "city delivery — {fee}",
     "directions": "Directions",
     "mapAlt": "Map: Khushbakhti restaurant on Kamoli Khujandi Avenue",
-    "heroAlt": "Devzira plov, Samarkand style",
-    "tempPhoto": "Temporary photo"
+    "heroAlt": "Devzira plov, Samarkand style"
   },
   "menu": {
     "title": "Menu",

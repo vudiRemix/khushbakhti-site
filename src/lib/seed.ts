@@ -1,7 +1,6 @@
-import credits from "../../data/photo-credits.json";
 import menu from "../../data/menu.json";
 import { sourceHash } from "./hash";
-import type { Category, Dish, MenuData, PhotoCredit, Settings } from "./types";
+import type { Category, Dish, MenuData, Settings } from "./types";
 
 export const SEED_CATEGORIES: Category[] = [
   {
@@ -49,21 +48,9 @@ interface SeedItem {
   photo: string | null;
 }
 
-interface SeedCredit {
-  author: string;
-  license: string;
-  license_url?: string;
-  source: string;
-}
-
 export function seedMenu(): MenuData {
   const now = new Date(0).toISOString();
-  const creditMap = credits as Record<string, SeedCredit>;
   const dishes: Dish[] = (menu.items as SeedItem[]).map((item, index) => {
-    const c = creditMap[item.id];
-    const photoCredit: PhotoCredit | null = c
-      ? { author: c.author, license: c.license, licenseUrl: c.license_url || undefined, source: c.source }
-      : null;
     return {
       id: item.id,
       category: item.category,
@@ -72,7 +59,7 @@ export function seedMenu(): MenuData {
       available: true,
       featured: FEATURED.has(item.id),
       photo: item.photo,
-      photoCredit,
+      photoCredit: null,
       sort: index + 1,
       name: { ru: item.name.ru, ...item.translations },
       description: { ru: "", tg: "", en: "", zh: "" },

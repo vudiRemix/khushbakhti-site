@@ -29,8 +29,9 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
   const { categories, dishes, settings: s } = await getMenu();
 
   const plov = dishes.find((d) => d.id === "plovsam");
-  const heroIsTemp = !plov?.photo || plov.photo.startsWith("/photos/temp/");
-  const heroSrc = heroIsTemp ? "/photos/temp/hero-plov.webp" : plov!.photo!;
+  // The wide built-in plov photo, until the owner uploads their own plov photo in the admin.
+  const ownPlov = plov?.photo && !plov.photo.startsWith("/photos/") ? plov.photo : null;
+  const heroSrc = ownPlov ?? "/photos/dishes/hero-plov.webp";
   const featured = dishes.filter((d) => d.featured && d.photo).slice(0, 4);
   const groups = categories
     .map((c) => ({ c, items: dishes.filter((d) => d.category === c.id) }))
@@ -48,7 +49,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
     "@type": "Restaurant",
     name: "Хушбахти (Khushbakhti)",
     url: `${siteUrl()}/${locale}`,
-    image: `${siteUrl()}/photos/temp/hero-plov.webp`,
+    image: `${siteUrl()}/photos/dishes/hero-plov.webp`,
     logo: `${siteUrl()}/brand/khushbakhti-logo-512.png`,
     telephone: s.phone,
     address: { "@type": "PostalAddress", streetAddress: s.address.ru, addressLocality: "Худжанд", addressCountry: "TJ" },
@@ -82,11 +83,6 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
           <div className="mx-auto flex max-w-[1280px] flex-wrap items-stretch gap-7">
             <figure className="relative m-0 min-h-[300px] min-w-0 flex-[3_1_560px] overflow-hidden border-[3px] border-ink bg-wash sm:min-h-[440px]">
               <Image src={heroSrc} alt={t.home.heroAlt} fill priority sizes="(max-width: 900px) 100vw, 60vw" className="object-cover" />
-              {heroIsTemp && plov?.photoCredit ? (
-                <figcaption className="absolute bottom-0 left-0 bg-ink/75 px-2.5 py-1 text-[13px] text-white">
-                  {t.home.tempPhoto}: {plov.photoCredit.author}, {plov.photoCredit.license}
-                </figcaption>
-              ) : null}
             </figure>
             <section aria-labelledby="today" className="flex min-w-0 flex-[2_1_340px] flex-col gap-1.5 border-[12px] border-wood bg-board px-7 py-6 font-[family-name:var(--font-chalk)] text-chalk">
               <h2 id="today" className="m-0 mb-1.5 text-[58px] font-bold leading-none text-gold">{t.home.today}</h2>

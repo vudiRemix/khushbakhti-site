@@ -42,7 +42,7 @@
         "zh": "绿豆汤配杏干"
       },
       "translation_status": "reviewed_draft",
-      "photo": null
+      "photo": "/photos/dishes/moshpiyoba.webp"
     },
     {
       "id": "cheese",
@@ -58,7 +58,7 @@
         "zh": "奶酪汤"
       },
       "translation_status": "reviewed_draft",
-      "photo": "/photos/temp/cheese.webp"
+      "photo": "/photos/dishes/cheese.webp"
     },
     {
       "id": "borscht",
@@ -74,7 +74,7 @@
         "zh": "乌克兰红菜汤"
       },
       "translation_status": "reviewed_draft",
-      "photo": "/photos/temp/borscht.webp"
+      "photo": "/photos/dishes/borscht.webp"
     },
     {
       "id": "shurpa",
@@ -90,7 +90,7 @@
         "zh": "肉丸汤"
       },
       "translation_status": "reviewed_draft",
-      "photo": "/photos/temp/shurpa.webp"
+      "photo": "/photos/dishes/shurpa.webp"
     },
     {
       "id": "khom",
@@ -106,7 +106,7 @@
         "zh": "清炖羊肉汤"
       },
       "translation_status": "reviewed_draft",
-      "photo": "/photos/temp/khom.webp"
+      "photo": "/photos/dishes/khom.webp"
     },
     {
       "id": "lagman",
@@ -122,7 +122,7 @@
         "zh": "维吾尔拉条子"
       },
       "translation_status": "reviewed_draft",
-      "photo": "/photos/temp/lagman.webp"
+      "photo": "/photos/dishes/lagman.webp"
     },
     {
       "id": "plovsam",
@@ -138,7 +138,7 @@
         "zh": "撒马尔罕德夫兹拉抓饭"
       },
       "translation_status": "reviewed_draft",
-      "photo": "/photos/temp/plovsam.webp"
+      "photo": "/photos/dishes/plovsam.webp"
     },
     {
       "id": "kencha",
@@ -154,7 +154,7 @@
         "zh": "肯恰抓饭"
       },
       "translation_status": "reviewed_draft",
-      "photo": "/photos/temp/kencha.webp"
+      "photo": "/photos/dishes/kencha.webp"
     },
     {
       "id": "shlamb",
@@ -170,7 +170,7 @@
         "zh": "羊肉串"
       },
       "translation_status": "reviewed_draft",
-      "photo": "/photos/temp/shlamb.webp"
+      "photo": "/photos/dishes/shlamb.webp"
     },
     {
       "id": "shbeef",
@@ -186,7 +186,7 @@
         "zh": "牛肉串"
       },
       "translation_status": "reviewed_draft",
-      "photo": "/photos/temp/shbeef.webp"
+      "photo": "/photos/dishes/shbeef.webp"
     },
     {
       "id": "shtender",
@@ -202,7 +202,7 @@
         "zh": "嫩肉串"
       },
       "translation_status": "reviewed_draft",
-      "photo": "/photos/temp/shtender.webp"
+      "photo": "/photos/dishes/shtender.webp"
     },
     {
       "id": "shstuffed",
@@ -218,7 +218,7 @@
         "zh": "酿肉串"
       },
       "translation_status": "reviewed_draft",
-      "photo": "/photos/temp/shstuffed.webp"
+      "photo": "/photos/dishes/shstuffed.webp"
     },
     {
       "id": "shnapoleon",
@@ -234,7 +234,7 @@
         "zh": "拿破仑烤串"
       },
       "translation_status": "reviewed_draft",
-      "photo": "/photos/temp/shnapoleon.webp"
+      "photo": "/photos/dishes/shnapoleon.webp"
     },
     {
       "id": "wings",
@@ -250,7 +250,7 @@
         "zh": "烤鸡翅"
       },
       "translation_status": "reviewed_draft",
-      "photo": "/photos/temp/wings.webp"
+      "photo": "/photos/dishes/wings.webp"
     },
     {
       "id": "tabaka",
@@ -266,7 +266,7 @@
         "zh": "塔巴卡烤春鸡"
       },
       "translation_status": "reviewed_draft",
-      "photo": "/photos/temp/tabaka.webp"
+      "photo": "/photos/dishes/tabaka.webp"
     },
     {
       "id": "cuthome",
@@ -282,7 +282,7 @@
         "zh": "家常肉饼"
       },
       "translation_status": "reviewed_draft",
-      "photo": "/photos/temp/cuthome.webp"
+      "photo": "/photos/dishes/cuthome.webp"
     },
     {
       "id": "cutkiev",
@@ -298,7 +298,7 @@
         "zh": "基辅鸡排"
       },
       "translation_status": "reviewed_draft",
-      "photo": "/photos/temp/cutkiev.webp"
+      "photo": "/photos/dishes/cutkiev.webp"
     },
     {
       "id": "cutkh",
@@ -314,7 +314,7 @@
         "zh": "Khushbakhti 招牌肉饼"
       },
       "translation_status": "reviewed_draft",
-      "photo": null
+      "photo": "/photos/dishes/cutkh.webp"
     },
     {
       "id": "brisket",
@@ -330,7 +330,7 @@
         "zh": "牛胸肉"
       },
       "translation_status": "reviewed_draft",
-      "photo": "/photos/temp/brisket.webp"
+      "photo": "/photos/dishes/brisket.webp"
     },
     {
       "id": "kavurdok",
@@ -346,7 +346,7 @@
         "zh": "卡乌尔达克炒肉"
       },
       "translation_status": "reviewed_draft",
-      "photo": "/photos/temp/kavurdok.webp"
+      "photo": "/photos/dishes/kavurdok.webp"
     },
     {
       "id": "turkish",
@@ -362,7 +362,7 @@
         "zh": "土耳其烤肉"
       },
       "translation_status": "reviewed_draft",
-      "photo": "/photos/temp/turkish.webp"
+      "photo": "/photos/dishes/turkish.webp"
     },
     {
       "id": "entrecote",
@@ -378,7 +378,7 @@
         "zh": "牛排"
       },
       "translation_status": "reviewed_draft",
-      "photo": "/photos/temp/entrecote.webp"
+      "photo": "/photos/dishes/entrecote.webp"
     },
     {
       "id": "chazza",
@@ -394,7 +394,7 @@
         "zh": "恰扎"
       },
       "translation_status": "reviewed_draft",
-      "photo": null
+      "photo": "/photos/dishes/chazza.webp"
     },
     {
       "id": "kazan",
@@ -410,7 +410,7 @@
         "zh": "大锅烤羊肉"
       },
       "translation_status": "reviewed_draft",
-      "photo": "/photos/temp/kazan.webp"
+      "photo": "/photos/dishes/kazan.webp"
     },
     {
       "id": "friedlamb",
@@ -426,7 +426,7 @@
         "zh": "香煎羊肉"
       },
       "translation_status": "reviewed_draft",
-      "photo": "/photos/temp/friedlamb.webp"
+      "photo": "/photos/dishes/friedlamb.webp"
     }
   ],
   "restaurant": {

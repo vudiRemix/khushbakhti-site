@@ -27,7 +27,8 @@ export default async function CreditsPage({ params }: { params: Promise<{ locale
       <SiteHeader locale={locale} path="/credits" t={t.common} phone={settings.phone} />
       <main id="main" className="mx-auto max-w-[900px] px-4 py-10 sm:px-6">
         <h1 className="sign-text m-0 mb-4 text-[44px] leading-none">{t.common.credits}</h1>
-        <p className="mb-6 text-muted">{t.common.photoNote}. Wikimedia Commons.</p>
+        <p className="mb-6 text-muted">{t.common.photoNote}.</p>
+        {credited.length ? (
         <ul className="m-0 list-none p-0">
           {credited.map((d) => (
             <li key={d.id} className="border-b border-line py-3">
@@ -37,6 +38,7 @@ export default async function CreditsPage({ params }: { params: Promise<{ locale
             </li>
           ))}
         </ul>
+        ) : null}
         <p className="mt-6 text-[15px] text-muted">
           Карта / Map: © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>
         </p>
